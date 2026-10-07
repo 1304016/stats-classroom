@@ -149,7 +149,7 @@ function showHome(scroll){
   cleanup.forEach(function(f){f();});cleanup=[];
   var first=ALL.filter(function(t){return LESSONS[t.slug];})[0];
   var cards=TERMS.map(function(c){
-    return '<a class="card" href="#'+c.terms[0].slug+'">'+esc(c.name)+'</a>';
+    return '<a class="card" href="#'+c.terms[0].slug+'"><span>'+esc(c.name)+'</span><svg class="card-arrow" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4 10h11M11 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a>';
   }).join("");
   var ghosts=UI.quotes.map(function(q){return '<div class="qghost" aria-hidden="true"><p class="qtext">'+esc(q.q)+'</p><p class="qby">'+esc(q.by)+'</p></div>';}).join("");
   lesson.innerHTML='<section class="hero"><h1 class="hero-title">'+esc(UI.brand)+'</h1>'+
