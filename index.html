@@ -6,6 +6,7 @@
 <title>Stats Classroom | সহজ বাংলায় 100টি statistics term</title>
 <meta name="description" content="ক্লাসরুম আর বিশ্ববিদ্যালয়ের উদাহরণ দিয়ে 100টি statistics term, সহজ বাংলায়। প্রতিটা term-এর সাথে নিজে করে দেখার একটা ছোট demo।">
 <link rel="icon" href="data:,">
+<script>try{var t=localStorage.getItem("sc-theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Noto+Sans+Bengali:wght@400;700&display=swap">
@@ -16,9 +17,8 @@
 <div class="app">
   <aside class="side" id="side" data-a="aria-label=sideLabel">
     <button class="railbtn" id="railbtn" type="button" aria-expanded="false" aria-controls="sidebody"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg></button>
-    <div class="railtext" aria-hidden="true"><span data-t="railText"></span></div>
     <div class="sidebody" id="sidebody">
-      <div class="brand" data-t="brand"></div>
+      <a class="homelink" id="homelink" href="#home" data-t="home"></a>
       <p class="tag" id="tag"></p>
       <input class="search" id="q" type="search" autocomplete="off" data-a="placeholder=searchPlaceholder;aria-label=searchLabel">
       <div class="legend"><span><i class="dot" style="background:var(--accent);border-color:var(--accent)"></i><span data-t="legendReady"></span></span><span><i class="dot"></i><span data-t="legendSoon"></span></span></div>
@@ -27,10 +27,16 @@
     </div>
   </aside>
   <main class="main" id="main">
-    <div class="topbar"><button class="btn row" id="navopen" type="button" aria-expanded="false" aria-controls="side" data-t="browseAll"></button></div>
+    <header class="topbar">
+      <button class="iconbtn menubtn" id="navopen" type="button" aria-expanded="false" aria-controls="side" data-a="aria-label=browseAll"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg></button>
+      <a class="logo" href="#home"><span class="logo-name" data-t="brand"></span><span class="logo-sub" data-t="topTag"></span></a>
+      <button class="iconbtn themebtn" id="themebtn" type="button"><svg class="i-moon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><svg class="i-sun" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+    </header>
+    <div class="page">
     <article class="lesson" id="lesson"></article>
     <a class="banner" href="https://rkmri.co/NA5AMleem25M/" target="_blank" rel="noopener noreferrer" data-a="aria-label=bannerLabel"><img src="assets/banner.jpg" width="1400" height="197" data-a="alt=bannerAlt"></a>
     <div class="footrow"><a class="fb" href="https://www.facebook.com/zabir.insight" target="_blank" rel="noopener noreferrer" data-a="aria-label=facebookLabel"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg></a></div>
+    </div>
   </main>
 </div>
 <div class="scrim" id="scrim" hidden></div>

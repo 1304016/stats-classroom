@@ -56,17 +56,17 @@ button,input{font-family:inherit}
 .app{display:grid;grid-template-columns:minmax(0,1fr);height:100%}
 
 /* Bottom banner. The last big element of every lesson page, same width as the lesson text. */
-.banner{display:block;flex:none;width:100%;max-width:780px;margin-top:40px;border-radius:8px;overflow:hidden;background:#0b5a4d;line-height:0}
+.banner{display:block;flex:none;width:100%;margin-top:40px;border-radius:8px;overflow:hidden;background:#0b5a4d;line-height:0}
 .banner img{display:block;width:100%;height:auto}
 .banner:hover img,.banner:focus-visible img{filter:brightness(1.08)}
 /* Footer row. Sits directly under the banner, same width, right aligned. Part of the page flow. */
-.footrow{flex:none;display:flex;justify-content:flex-end;width:100%;max-width:780px;margin-top:10px}
+.footrow{flex:none;display:flex;justify-content:flex-end;width:100%;margin-top:10px}
 .fb{display:inline-flex;width:28px;height:28px;color:var(--ink-2)}
 .fb svg{display:block;width:28px;height:28px}
 .fb:hover,.fb:focus-visible{color:var(--accent)}
 
 /* Sidebar pieces that only exist on wide screens */
-.railbtn,.railtext{display:none}
+.railbtn,.iconbtn.menubtn{display:none}
 
 /* Sidebar */
 .side{height:100%;overflow-y:auto;background:var(--surface);border-right:1px solid var(--line);padding:22px 16px 32px}
@@ -95,9 +95,40 @@ details.cat[open] summary::after{content:"\2212"}
 .none{color:var(--ink-2);font-size:.9rem;margin:12px 4px}
 
 /* Main */
-.main{height:100%;overflow-y:auto;min-width:0;display:flex;flex-direction:column;padding-block:32px 24px;padding-inline:clamp(16px,4vw,56px)}
-.topbar{display:none;margin-bottom:20px}
-.lesson{display:flex;flex-direction:column;gap:32px;max-width:780px;width:100%;flex:1 0 auto}
+.main{height:100%;overflow-y:auto;min-width:0;display:flex;flex-direction:column}
+/* Thin sticky top bar. Brand with a fixed small line under it on the left, theme button on the right. */
+.topbar{position:sticky;top:0;z-index:5;flex:none;height:56px;display:flex;align-items:center;gap:12px;padding-inline:clamp(16px,4vw,32px);background:var(--surface);border-bottom:1px solid var(--line)}
+.logo{display:flex;flex-direction:column;min-width:0;color:var(--ink);text-decoration:none}
+.logo-name{font-family:var(--font-display);font-weight:800;font-size:1.2rem;line-height:1.15}
+.logo-sub{font-size:.75rem;line-height:1.4;color:var(--ink-2)}
+.logo:hover .logo-name{color:var(--accent)}
+.iconbtn{display:flex;width:40px;height:40px;padding:0;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:6px;background:var(--surface-2);color:var(--ink);cursor:pointer;flex:none}
+.iconbtn:hover{border-color:var(--accent)}
+.themebtn{margin-left:auto}
+.themebtn .i-sun{display:none}
+:root[data-theme="dark"] .themebtn .i-sun{display:block}
+:root[data-theme="dark"] .themebtn .i-moon{display:none}
+/* One centred column for everything on the page. */
+.page{flex:1 0 auto;display:flex;flex-direction:column;width:100%;max-width:924px;margin-inline:auto;padding:32px clamp(16px,4vw,32px) 24px}
+.lesson{display:flex;flex-direction:column;gap:32px;width:100%;flex:1 0 auto}
+.homelink{display:flex;align-items:center;gap:10px;padding:8px 10px;margin-bottom:10px;border-radius:6px;color:var(--ink);text-decoration:none;font-weight:700}
+.homelink:hover{background:var(--surface-2)}
+.homelink[aria-current="page"]{background:var(--accent);color:var(--accent-ink)}
+/* Home page */
+.hero-title{font-family:var(--font-display);font-weight:800;font-size:clamp(2.4rem,8vw,4rem);line-height:1.1;margin:0}
+.typer{margin:12px 0 0;min-height:3.4em;font-size:clamp(1.15rem,3.4vw,1.6rem);line-height:1.7;font-weight:700;color:var(--accent)}
+.cursor{display:inline-block;width:2px;height:1.1em;margin-left:2px;vertical-align:-.15em;background:currentColor;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.intro{margin:8px 0 0;max-width:60ch;font-size:1.1rem}
+.cta{margin-top:20px;background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700;padding:10px 24px}
+.cta:hover{border-color:var(--ink)}
+.cards{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:16px}
+.card{display:flex;flex-direction:column;gap:2px;padding:16px 18px;background:var(--surface);border:1px solid var(--line);border-radius:8px;color:var(--ink);text-decoration:none}
+.card:hover{border-color:var(--accent)}
+.card-name{font-weight:700;font-size:1.1rem;line-height:1.6}
+.card-meta{font-size:.9rem;color:var(--ink-2);line-height:1.6}
+@media (min-width:560px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:900px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .label{margin:0;font-size:.95rem;font-weight:700;color:var(--ink-2);line-height:1.6}
 .crumb{font-size:.95rem;font-weight:700;color:var(--accent)}
 h1.term{font-family:var(--font-bn);font-weight:700;font-size:clamp(1.9rem,5.5vw,3rem);line-height:1.3;margin:8px 0 0;text-wrap:balance}
@@ -184,10 +215,10 @@ input[type=range]{width:100%;min-height:30px;accent-color:var(--accent);margin:0
 
 @media (max-width:859px){
   .app{display:block}
-  .topbar{display:block}
+  .iconbtn.menubtn{display:flex}
   .side{position:fixed;top:0;bottom:0;left:0;z-index:20;width:min(340px,88vw);padding-top:calc(22px + env(safe-area-inset-top,0px));padding-bottom:calc(32px + env(safe-area-inset-bottom,0px));transform:translateX(-100%);visibility:hidden;transition:transform .2s ease,visibility .2s}
   .side.open{transform:none;visibility:visible}
-  .main{padding-block:20px 24px}
+  .page{padding-top:20px}
   .panel{padding:16px}
 }
 /* Wide screens. The term list rests as a slim rail and opens on hover or on the menu button. */
@@ -195,12 +226,9 @@ input[type=range]{width:100%;min-height:30px;accent-color:var(--accent);margin:0
   .app{padding-left:56px}
   .side{position:fixed;top:0;bottom:0;left:0;z-index:12;width:56px;padding:0;overflow:hidden;transition:width .18s ease,box-shadow .18s ease}
   .side:hover:not(.shut),.side.pinned{width:310px;box-shadow:6px 0 28px rgba(0,0,0,.22)}
-  .railbtn{display:flex;position:fixed;top:14px;left:8px;z-index:14;width:40px;height:40px;padding:0;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:6px;background:var(--surface-2);color:var(--ink);cursor:pointer}
+  .railbtn{display:flex;position:fixed;top:8px;left:8px;z-index:14;width:40px;height:40px;padding:0;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:6px;background:var(--surface-2);color:var(--ink);cursor:pointer}
   .railbtn:hover{border-color:var(--accent)}
-  .railtext{display:flex;position:fixed;top:72px;left:0;width:56px;justify-content:center;pointer-events:none;color:var(--ink-2);font-family:var(--font-display);font-weight:800;font-size:.9rem;transition:opacity .12s ease}
-  .railtext span{writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap}
-  .side:hover:not(.shut) .railtext,.side.pinned .railtext{opacity:0}
   .sidebody{width:310px;height:100%;overflow-y:auto;padding:64px 16px 32px;visibility:hidden;opacity:0;transition:opacity .15s ease,visibility 0s linear .18s}
   .side:hover:not(.shut) .sidebody,.side.pinned .sidebody{visibility:visible;opacity:1;transition-delay:0s}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.cursor{animation:none}}

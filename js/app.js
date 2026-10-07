@@ -10,6 +10,20 @@ document.querySelectorAll("[data-a]").forEach(function(n){
   n.getAttribute("data-a").split(";").forEach(function(p){var kv=p.split("=");n.setAttribute(kv[0],UI[kv[1]]);});
 });
 
+/* Light and dark theme. The choice is kept in localStorage when it is available. */
+var root=document.documentElement,themebtn=document.getElementById("themebtn");
+function setTheme(t,save){
+  root.setAttribute("data-theme",t);
+  themebtn.setAttribute("aria-label",t==="dark"?UI.themeToLight:UI.themeToDark);
+  if(save){try{localStorage.setItem("sc-theme",t);}catch(e){}}
+}
+(function(){
+  var t=root.getAttribute("data-theme");
+  if(t!=="dark"&&t!=="light")t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";
+  setTheme(t,false);
+})();
+themebtn.addEventListener("click",function(){setTheme(root.getAttribute("data-theme")==="dark"?"light":"dark",true);});
+
 /* Term list */
 var ALL=[],BY={};
 TERMS.forEach(function(c){c.terms.forEach(function(t){t.cat=c.name;t.i=ALL.length;ALL.push(t);BY[t.slug]=t;});});
@@ -17,7 +31,7 @@ function title(t){return t.bn+" ("+t.en+")";}
 
 var nav=document.getElementById("nav"),side=document.getElementById("side"),scrim=document.getElementById("scrim");
 var navopen=document.getElementById("navopen"),qbox=document.getElementById("q"),none=document.getElementById("none");
-var railbtn=document.getElementById("railbtn");
+var railbtn=document.getElementById("railbtn"),homelink=document.getElementById("homelink");
 var readyCount=ALL.filter(function(t){return LESSONS[t.slug];}).length;
 document.getElementById("tag").textContent=tpl(UI.tag,{n:readyCount});
 
@@ -56,7 +70,7 @@ pinRail(false);
 railbtn.addEventListener("click",function(){pinRail(!side.classList.contains("pinned"));});
 side.addEventListener("mouseleave",function(){side.classList.remove("shut");});
 document.addEventListener("keydown",function(e){if(e.key==="Escape"){openNav(false);pinRail(false);}});
-nav.addEventListener("click",function(e){
+side.addEventListener("click",function(e){
   if(!e.target.closest("a"))return;
   openNav(false);
   pinRail(false);
@@ -88,18 +102,64 @@ function show(slug,scroll){
     if(fn)fn(box,cleanup,L.demo);else box.textContent=UI.demoMissing;
   }
   document.title=title(t)+" | "+UI.brand;
+  markCurrent(slug);
+  if(scroll)main.scrollTop=0;
+}
+/* Home page */
+function segments(str){
+  if(window.Intl&&Intl.Segmenter){return Array.from(new Intl.Segmenter("bn",{granularity:"grapheme"}).segment(str),function(x){return x.segment;});}
+  return Array.from(str);
+}
+/* Typewriter. Types grapheme clusters so Bengali conjuncts never break. */
+function typewriter(el,lines,label){
+  var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var text=el.querySelector(".typer-text"),cur=el.querySelector(".cursor");
+  if(reduce){text.textContent=lines[0];el.setAttribute("aria-label",lines[0]);cur.hidden=true;return;}
+  var segs=lines.map(segments),li=0,n=0,timer=0;
+  function draw(){text.textContent=segs[li].slice(0,n).join("");}
+  function typeStep(){
+    el.setAttribute("aria-label",lines[li]);
+    n++;draw();
+    if(n>=segs[li].length)timer=setTimeout(eraseStep,2500);else timer=setTimeout(typeStep,60);
+  }
+  function eraseStep(){
+    n=Math.max(0,n-2);draw();
+    if(n===0){li=(li+1)%lines.length;timer=setTimeout(typeStep,350);}else timer=setTimeout(eraseStep,25);
+  }
+  typeStep();
+  cleanup.push(function(){clearTimeout(timer);});
+}
+function showHome(scroll){
+  cleanup.forEach(function(f){f();});cleanup=[];
+  var first=ALL.filter(function(t){return LESSONS[t.slug];})[0];
+  var cards=TERMS.map(function(c){
+    var ready=c.terms.filter(function(t){return LESSONS[t.slug];}).length;
+    return '<a class="card" href="#'+c.terms[0].slug+'"><span class="card-name">'+esc(c.name)+'</span><span class="card-meta">'+esc(tpl(UI.cardTerms,{n:c.terms.length}))+' · '+esc(tpl(UI.cardReady,{n:ready}))+'</span></a>';
+  }).join("");
+  lesson.innerHTML='<section class="hero"><h1 class="hero-title">'+esc(UI.brand)+'</h1>'+
+    '<p class="typer" role="img"><span class="typer-text" aria-hidden="true"></span><span class="cursor" aria-hidden="true"></span></p>'+
+    '<p class="intro">'+esc(UI.intro)+'</p>'+
+    '<a class="btn cta" href="#'+first.slug+'">'+esc(UI.start)+'</a></section>'+
+    '<section><h2 class="label">'+esc(UI.catsTitle)+'</h2><div class="cards">'+cards+'</div></section>';
+  typewriter(lesson.querySelector(".typer"),UI.taglines);
+  document.title=UI.docTitle;
+  markCurrent(null);
+  if(scroll)main.scrollTop=0;
+}
+function markCurrent(slug){
   nav.querySelectorAll("a[aria-current]").forEach(function(a){a.removeAttribute("aria-current");});
+  if(!slug){homelink.setAttribute("aria-current","page");return;}
+  homelink.removeAttribute("aria-current");
   var a=nav.querySelector('a[data-slug="'+slug+'"]');
   if(a){
     a.setAttribute("aria-current","page");
     var det=a.closest("details");if(det)det.open=true;
     try{a.scrollIntoView({block:"nearest"});}catch(err){}
   }
-  if(scroll)main.scrollTop=0;
 }
 function route(initial){
   var h=decodeURIComponent(location.hash.slice(1));
-  show(BY[h]?h:"mean",!initial);
+  if(BY[h])show(h,!initial);else showHome(!initial);
 }
 window.addEventListener("hashchange",function(){route(false);});
 route(true);
