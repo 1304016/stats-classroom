@@ -1,0 +1,27 @@
+/* Every fixed UI string. Bengali only for now. Another language can replace this file. */
+window.UI={
+  docTitle:"Stats Classroom | সহজ বাংলায় 100টি statistics term",
+  brand:"Stats Classroom",
+  railText:"Stats Classroom · 100 term",
+  tag:"ক্লাসরুম আর বিশ্ববিদ্যালয়ের উদাহরণ দিয়ে 100টি statistics term, সহজ বাংলায়। এখন {n}টি পাঠ তৈরি আছে।",
+  sideLabel:"সব term",
+  navLabel:"ক্যাটাগরি অনুযায়ী term",
+  searchPlaceholder:"Term খুঁজুন",
+  searchLabel:"Term খুঁজুন",
+  legendReady:"পাঠ তৈরি আছে",
+  legendSoon:"শিগগিরই আসছে",
+  readySr:" (পাঠ তৈরি আছে)",
+  noMatch:"আপনার খোঁজা term পাওয়া যায়নি।",
+  browseAll:"সব 100টি term দেখুন",
+  railOpen:"Term-এর তালিকা খুলুন",
+  railClose:"Term-এর তালিকা বন্ধ করুন",
+  labels:{classroom:"ক্লাসরুমের উদাহরণ",demo:"নিজে করে দেখুন",remember:"মনে রাখুন"},
+  prev:"← আগের",
+  next:"পরের →",
+  soonTitle:"এই পাঠ শিগগিরই আসছে",
+  soonBody:"এই term-এর জন্য সহজ ব্যাখ্যা, ক্লাসরুমের একটা উদাহরণ আর নিজে করে দেখার একটা demo আসবে। ততক্ষণ উপরের এক লাইনের কথাটা পড়ে নিন। ভরা dot-ওয়ালা যেকোনো term খুললে দেখবেন একটা পুরো পাঠ কেমন হয়।",
+  demoMissing:"এই demo এখন চালু নেই।",
+  bannerAlt:"গবেষণা ১০১, সহজ ভাষায় গবেষণা। লেখক আব্দুল্লাহ আল জাবির। এখনই সংগ্রহ করুন।",
+  bannerLabel:"গবেষণা ১০১ বইটি এখনই সংগ্রহ করুন",
+  facebookLabel:"Facebook পেজ"
+};

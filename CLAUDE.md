@@ -76,4 +76,4 @@ Do not create or push anything to GitHub other than what Phase 1 below says.
 9. Stop and wait for my review.
 
 ## Status
-Phase 1 not started. After Phase 1 the next category is Describing data, then the rest in sidebar order.
+Phase 1 is built and waiting for the author's review. 8 lessons are live (mean, standard-deviation, histogram, normal-distribution, p-value, confidence-interval, correlation, regression). The next category is Describing data, then the rest in sidebar order.
