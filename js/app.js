@@ -32,14 +32,11 @@ function title(t){return t.bn+" ("+t.en+")";}
 var nav=document.getElementById("nav"),side=document.getElementById("side"),scrim=document.getElementById("scrim");
 var navopen=document.getElementById("navopen"),qbox=document.getElementById("q"),none=document.getElementById("none");
 var railbtn=document.getElementById("railbtn"),homelink=document.getElementById("homelink");
-var readyCount=ALL.filter(function(t){return LESSONS[t.slug];}).length;
-document.getElementById("tag").textContent=tpl(UI.tag,{n:readyCount});
 
 TERMS.forEach(function(c){
   var d=document.createElement("details");d.className="cat";
   var items=c.terms.map(function(t){
-    var ok=!!LESSONS[t.slug];
-    return '<li class="'+(ok?'ready':'')+'" data-name="'+esc((t.bn+" "+t.en).toLowerCase())+'"><a href="#'+t.slug+'" data-slug="'+t.slug+'"><span class="dot" aria-hidden="true"></span><span class="tn"><span>'+esc(t.bn)+'</span><span class="en">'+esc(t.en)+'</span></span>'+(ok?'<span class="sr">'+esc(UI.readySr)+'</span>':'')+'</a></li>';
+    return '<li data-name="'+esc((t.bn+" "+t.en).toLowerCase())+'"><a href="#'+t.slug+'" data-slug="'+t.slug+'"><span class="tn"><span>'+esc(t.bn)+'</span><span class="en">'+esc(t.en)+'</span></span>'+'</a></li>';
   }).join("");
   d.innerHTML='<summary><span>'+esc(c.name)+'</span><span class="count">'+c.terms.length+'</span></summary><ul class="terms">'+items+'</ul>';
   nav.appendChild(d);
