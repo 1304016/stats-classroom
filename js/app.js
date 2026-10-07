@@ -78,7 +78,18 @@ side.addEventListener("click",function(e){
 });
 
 /* Lesson view. The book banner shows on lesson pages only. */
-var bannerEl=document.querySelector(".banner");
+var bannerEl=document.querySelector(".banner"),bannerIO=null;
+function armBanner(on){
+  if(bannerIO){bannerIO.disconnect();bannerIO=null;}
+  bannerEl.classList.remove("reveal","in");
+  var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(!on||reduce||!("IntersectionObserver" in window))return;
+  bannerEl.classList.add("reveal");
+  bannerIO=new IntersectionObserver(function(es){
+    if(es.some(function(e){return e.isIntersecting;})){bannerEl.classList.add("in");bannerIO.disconnect();bannerIO=null;}
+  },{root:main,threshold:0.2});
+  bannerIO.observe(bannerEl);
+}
 var main=document.getElementById("main"),lesson=document.getElementById("lesson"),cleanup=[];
 function pagerLink(t,label){
   if(!t)return "<span></span>";
@@ -87,6 +98,7 @@ function pagerLink(t,label){
 function para(t){return "<p>"+esc(t)+"</p>";}
 function show(slug,scroll){
   bannerEl.hidden=false;
+  armBanner(true);
   cleanup.forEach(function(f){f();});cleanup=[];
   var t=BY[slug],L=LESSONS[slug];
   var html='<header class="head"><div class="crumb">'+esc(t.cat)+'</div><h1 class="term">'+esc(title(t))+'</h1><p class="def">'+esc(L?L.def:t.meaning)+'</p></header>';
@@ -146,6 +158,7 @@ function showHome(scroll){
     '<section><h2 class="label">'+esc(UI.catsTitle)+'</h2><div class="cards">'+cards+'</div></section>';
   typewriter(lesson.querySelector(".quote"),UI.quotes);
   bannerEl.hidden=true;
+  armBanner(false);
   document.title=UI.docTitle;
   markCurrent(null);
   if(scroll)main.scrollTop=0;

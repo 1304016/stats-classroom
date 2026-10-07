@@ -57,7 +57,8 @@ button,input{font-family:inherit}
 
 /* Bottom banner. The last big element of every lesson page, same width as the lesson text. */
 .banner{display:block;flex:none;width:100%;margin-top:40px;border-radius:8px;overflow:hidden;background:#0b5a4d;line-height:0}
-.banner img{display:block;width:100%;height:auto}
+.banner{aspect-ratio:1400/197}
+.banner img{display:block;width:100%;height:auto;aspect-ratio:1400/197}
 .banner:hover img,.banner:focus-visible img{filter:brightness(1.08)}
 /* Footer row. Sits directly under the banner, same width, right aligned. Part of the page flow. */
 .footrow{flex:none;display:flex;justify-content:flex-end;width:100%;margin-top:10px}
@@ -236,3 +237,7 @@ input[type=range]{width:100%;min-height:30px;accent-color:var(--accent);margin:0
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}.cursor{animation:none}}
 .banner[hidden]+.footrow{margin-top:40px}
+/* Scroll reveal for the bottom banner. The .reveal class is added by JavaScript only, so without JavaScript the banner is always visible. The space is already reserved by the aspect ratio. */
+.banner.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}
+.banner.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.banner.reveal{opacity:1;transform:none;transition:none}}
