@@ -142,7 +142,6 @@ function showHome(scroll){
   var ghosts=UI.quotes.map(function(q){return '<div class="qghost" aria-hidden="true"><p class="qtext">'+esc(q.q)+'</p><p class="qby">'+esc(q.by)+'</p></div>';}).join("");
   lesson.innerHTML='<section class="hero"><h1 class="hero-title">'+esc(UI.brand)+'</h1>'+
     '<div class="quote" role="img"><div class="qlive" aria-hidden="true"><p class="qtext"><span class="typer-text"></span><span class="cursor"></span></p><p class="qby"></p></div>'+ghosts+'</div>'+
-    '<p class="intro">'+esc(UI.intro)+'</p>'+
     '<a class="btn cta" href="#'+first.slug+'">'+esc(UI.start)+'</a></section>'+
     '<section><h2 class="label">'+esc(UI.catsTitle)+'</h2><div class="cards">'+cards+'</div></section>';
   typewriter(lesson.querySelector(".quote"),UI.quotes);

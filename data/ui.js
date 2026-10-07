@@ -12,7 +12,6 @@ window.UI={
     {q:"The best thing about being a statistician is that you get to play in everyone's backyard.",by:"John Tukey"},
     {q:"To consult the statistician after an experiment is finished is often merely to ask him to conduct a post mortem examination.",by:"R. A. Fisher"},
     {q:"If you torture the data long enough, it will confess to anything.",by:"Ronald Coase"}],
-  intro:"এখানে 100টা statistics term আছে, প্রতিটার সাথে সহজ ব্যাখ্যা, ক্লাসরুমের একটা উদাহরণ আর নিজে করে দেখার একটা ছোট demo। ছাত্রছাত্রী আর নতুন গবেষকদের কথা ভেবেই লেখা।",
   start:"শুরু করুন",
   quoteLabel:"{q} {by}",
   catsTitle:"ক্যাটাগরি অনুযায়ী শিখুন",

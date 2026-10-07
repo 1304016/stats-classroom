@@ -124,8 +124,7 @@ details.cat[open] summary::after{content:"\2212"}
 .qby.on{opacity:1}
 .cursor{display:inline-block;width:2px;height:1.1em;margin-left:2px;vertical-align:-.15em;background:currentColor;animation:blink 1s steps(1) infinite}
 @keyframes blink{50%{opacity:0}}
-.intro{margin:8px 0 0;max-width:60ch;font-size:1.1rem}
-.cta{margin-top:20px;background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700;padding:10px 24px}
+.cta{margin-top:24px;background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700;padding:10px 24px}
 .cta:hover{border-color:var(--ink)}
 .cards{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin-top:12px}
 .card{display:flex;align-items:center;min-height:56px;padding:10px 18px;background:var(--surface);border:1px solid var(--line);border-radius:8px;color:var(--ink);text-decoration:none;font-weight:700;line-height:1.5}
