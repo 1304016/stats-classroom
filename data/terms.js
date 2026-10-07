@@ -49,7 +49,7 @@ window.TERMS=[
     {slug:"outlier",bn:"আউটলায়ার",en:"Outlier",meaning:"বাকিদের থেকে অনেক দূরে থাকা একটা মান।"},
     {slug:"skewness",bn:"স্কিউনেস",en:"Skewness",meaning:"ডেটা কোন দিকে কতটা কাত হয়ে আছে।"},
     {slug:"kurtosis",bn:"কার্টোসিস",en:"Kurtosis",meaning:"ডেটার দুই প্রান্ত কতটা ভারী।"},
-    {slug:"frequency",bn:"গণসংখ্যা",en:"Frequency",meaning:"একটা মান কতবার এসেছে।"},
+    {slug:"frequency",bn:"ফ্রিকোয়েন্সি",en:"Frequency",meaning:"একটা মান কতবার এসেছে।"},
     {slug:"relative-frequency",bn:"রিলেটিভ ফ্রিকোয়েন্সি",en:"Relative frequency",meaning:"কতবার এসেছে সেটা মোটের অনুপাত বা শতাংশে।"},
     {slug:"coefficient-of-variation",bn:"কোএফিশিয়েন্ট অফ ভ্যারিয়েশন",en:"Coefficient of variation",meaning:"Standard deviation-কে mean-এর তুলনায় দেখা।"},
   ]},
