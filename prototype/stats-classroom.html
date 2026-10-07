@@ -1,0 +1,1123 @@
+<title>Stats Classroom</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Noto+Sans+Bengali:wght@400;700&display=swap">
+<style>
+/* Layout idea. A fixed index of all 100 terms on the left, one lesson at a time on the right,
+   with the live demo as the centre of every lesson. Green-tinted neutrals, teal as the main
+   accent and burnt orange as the second mark colour inside demos. */
+:root{
+  --bg:#F2F5F2;
+  --surface:#FFFFFF;
+  --surface-2:#E7EEE9;
+  --ink:#13231D;
+  --ink-2:#4B5C54;
+  --line:#CBD7CF;
+  --accent:#0B6E5F;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#D5ECE5;
+  --c2:#B4530A;
+  --font-display:'Bricolage Grotesque','Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-body:'Atkinson Hyperlegible','Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-bn:'Noto Sans Bengali','Atkinson Hyperlegible','Nirmala UI','Segoe UI',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1714;
+    --surface:#15221D;
+    --surface-2:#1D2D27;
+    --ink:#E4EFE9;
+    --ink-2:#9DB3A9;
+    --line:#2B3F37;
+    --accent:#4FD1B5;
+    --accent-ink:#06241D;
+    --accent-soft:#17382F;
+    --c2:#F0A35E;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1714;
+  --surface:#15221D;
+  --surface-2:#1D2D27;
+  --ink:#E4EFE9;
+  --ink-2:#9DB3A9;
+  --line:#2B3F37;
+  --accent:#4FD1B5;
+  --accent-ink:#06241D;
+  --accent-soft:#17382F;
+  --c2:#F0A35E;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:17px;line-height:1.6}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.app{display:grid;grid-template-columns:minmax(0,1fr);height:100%}
+
+/* Book ad. A slim banner at the very bottom of every lesson. */
+.adfoot{display:block;flex:none;width:100%;max-width:780px;margin-top:40px;border-radius:8px;overflow:hidden;background:#0d233a;line-height:0}
+.adfoot img{display:block;width:100%;height:auto}
+.adfoot:hover img{filter:brightness(1.08)}
+
+/* Sidebar pieces that only exist on wide screens */
+.railbtn,.railtext{display:none}
+
+/* Sidebar */
+.side{height:100%;overflow-y:auto;background:var(--surface);border-right:1px solid var(--line);padding:22px 16px 32px}
+.brand{font-family:var(--font-display);font-weight:800;font-size:1.6rem;letter-spacing:-.01em;line-height:1.1}
+.tag{margin:6px 0 14px;color:var(--ink-2);font-size:.9rem;line-height:1.45}
+.search{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit;font-size:.95rem}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.82rem;color:var(--ink-2);margin:12px 0 10px}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+details.cat{border-top:1px solid var(--line)}
+details.cat summary{cursor:pointer;list-style:none;padding:12px 4px;display:flex;align-items:center;gap:8px;font-weight:700;font-size:.95rem}
+details.cat summary::-webkit-details-marker{display:none}
+details.cat summary .count{margin-left:auto;color:var(--ink-2);font-weight:400;font-size:.85rem}
+details.cat summary::after{content:"+";width:14px;text-align:center;color:var(--ink-2)}
+details.cat[open] summary::after{content:"\2212"}
+.terms{list-style:none;margin:0 0 10px;padding:0}
+.terms a{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:6px;color:var(--ink);text-decoration:none;font-size:.95rem;line-height:1.3}
+.terms a:hover{background:var(--surface-2)}
+.terms li:not(.ready) a{color:var(--ink-2)}
+.terms li a[aria-current="page"]{background:var(--accent);color:var(--accent-ink)}
+.dot{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--ink-2);flex:none}
+.ready .dot{background:var(--accent);border-color:var(--accent)}
+.terms li a[aria-current="page"] .dot{border-color:currentColor;background:transparent}
+.terms li.ready a[aria-current="page"] .dot{background:currentColor}
+.none{color:var(--ink-2);font-size:.9rem;margin:12px 4px}
+
+/* Main */
+.main{height:100%;overflow-y:auto;min-width:0;display:flex;flex-direction:column;padding-block:32px 24px;padding-inline:clamp(16px,4vw,56px)}
+.topbar{display:none;margin-bottom:20px}
+.lesson{display:flex;flex-direction:column;gap:32px;max-width:780px;width:100%;flex:1 0 auto}
+.label{margin:0;font-family:var(--font-body);font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.crumb{font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+h1.term{font-family:var(--font-display);font-weight:800;font-size:clamp(2.3rem,6vw,3.7rem);line-height:1.02;letter-spacing:-.02em;margin:8px 0 0;text-wrap:balance}
+.def{font-size:1.28rem;line-height:1.5;margin:18px 0 0;max-width:60ch;text-wrap:pretty}
+.head{display:block}
+.sec{display:flex;flex-direction:column;gap:10px}
+.sec p{margin:0;max-width:65ch}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:20px;min-width:0}
+.demo{display:flex;flex-direction:column;gap:16px}
+#demo{display:flex;flex-direction:column;gap:16px;min-width:0}
+.hint{margin:0;color:var(--ink-2);font-size:.95rem}
+.remember{background:var(--surface-2);padding:18px 20px;border-radius:6px;display:flex;flex-direction:column;gap:8px}
+.remember p{margin:0;max-width:65ch}
+.soon{border-style:dashed}
+.soon p{margin:8px 0 0;max-width:60ch;color:var(--ink-2)}
+
+/* Controls */
+.btn{font:inherit;font-size:.95rem;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);padding:9px 14px;border-radius:6px;cursor:pointer;text-decoration:none;display:inline-flex;flex-direction:column;gap:2px;line-height:1.3}
+.btn:hover{border-color:var(--accent)}
+.btn[disabled]{opacity:.5;cursor:default}
+.btn small{color:var(--ink-2);font-size:.78rem;text-transform:uppercase;letter-spacing:.08em}
+.btn.row{flex-direction:row;align-items:center}
+.controls,.presets{display:flex;flex-wrap:wrap;gap:10px}
+.ctl{display:flex;flex-direction:column;gap:6px}
+.ctl label{font-weight:700}
+.ctl .val{font-variant-numeric:tabular-nums;color:var(--accent)}
+input[type=range]{width:100%;min-height:30px;accent-color:var(--accent);margin:0}
+.stats{display:flex;flex-wrap:wrap;gap:12px 36px}
+.stat .n{font-family:var(--font-display);font-weight:800;font-size:2.1rem;line-height:1.05;font-variant-numeric:tabular-nums}
+.stat .k{font-size:.85rem;color:var(--ink-2)}
+.stat .n.a{color:var(--accent)}
+.stat .n.b{color:var(--c2)}
+.msg{margin:0;padding:12px 14px;background:var(--surface-2);border-radius:6px;max-width:65ch}
+.swatches{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.88rem;color:var(--ink-2)}
+.swatches span{display:inline-flex;align-items:center;gap:8px}
+.sw{width:14px;height:14px;border-radius:3px;display:inline-block}
+.sw.a{background:var(--accent);opacity:.4}
+.sw.b{background:var(--c2)}
+.sw.c{border:2.5px solid var(--ink)}
+.sw.d{background:var(--accent)}
+.sw.e{background:var(--accent-soft);border:1px solid var(--accent)}
+
+/* Charts */
+.chart-box{width:100%;min-width:0}
+.chart{display:block;max-width:100%}
+.chart .axis{stroke:var(--ink-2);stroke-width:1.5}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart .t{fill:var(--ink-2);font-size:13px;font-family:var(--font-body)}
+.chart .t.strong{font-weight:700;font-size:14px}
+.chart .t.a{fill:var(--accent)}
+.chart .t.b{fill:var(--c2)}
+.chart .medline{stroke:var(--accent);stroke-width:2;stroke-dasharray:4 4}
+.chart .medmark{fill:var(--accent)}
+.chart .meanmark{fill:var(--c2)}
+.chart .dot-s{fill:var(--accent);stroke:var(--surface);stroke-width:2;cursor:grab}
+.chart .dot-s.extra{fill:var(--c2)}
+.chart .dot-s:focus-visible{outline:none;stroke:var(--ink);stroke-width:3}
+.chart .band{fill:var(--accent-soft)}
+.chart .meanln{stroke:var(--ink-2);stroke-width:1.5;stroke-dasharray:4 4}
+.chart .sd-in{fill:var(--accent)}
+.chart .sd-out{fill:var(--c2)}
+.chart .brk{stroke:var(--accent);stroke-width:2;fill:none}
+.chart .pt{fill:var(--accent);fill-opacity:.8;stroke:var(--surface);stroke-width:1}
+.chart .fit{stroke:var(--c2);stroke-width:2.5;fill:none}
+.chart .bar{fill:var(--accent);fill-opacity:.4}
+.chart .bar.ext{fill:var(--c2);fill-opacity:1}
+.chart .bar.obs{stroke:var(--ink);stroke-width:2.5}
+
+.btn[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.sw.f{background:var(--ink-2)}
+.chart .hbar{fill:var(--accent);fill-opacity:.55;cursor:pointer}
+.chart .hbar.hot{fill:var(--c2);fill-opacity:1}
+.chart .curve{stroke:var(--accent);stroke-width:2.5;fill:none}
+.chart .area{fill:var(--accent);fill-opacity:.3}
+.chart .ci{stroke:var(--accent);stroke-width:3;stroke-linecap:round}
+.chart .ci.miss{stroke:var(--c2)}
+.chart .cidot{fill:var(--accent)}
+.chart .cidot.miss{fill:var(--c2)}
+.chart .truth{stroke:var(--ink);stroke-width:1.5;stroke-dasharray:4 4}
+.chart .res{stroke:var(--ink-2);stroke-width:2;stroke-dasharray:3 3}
+.toprow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.langs{display:flex;gap:6px}
+.btn.sm{padding:5px 12px;font-size:.88rem}
+.lesson[lang="bn"]{font-family:var(--font-bn);line-height:1.85}
+.lesson[lang="bn"] h1.term{font-family:var(--font-bn);font-weight:700;font-size:clamp(2rem,5.5vw,3.1rem);line-height:1.3;letter-spacing:0}
+.lesson[lang="bn"] .def{line-height:1.7}
+.lesson[lang="bn"] .label,.lesson[lang="bn"] .crumb,.lesson[lang="bn"] .btn small{font-family:var(--font-bn);letter-spacing:0;text-transform:none;font-size:.95rem}
+.lesson[lang="bn"] .hint,.lesson[lang="bn"] .stat .k,.lesson[lang="bn"] .msg,.lesson[lang="bn"] .btn{font-family:var(--font-bn)}
+.pager{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+.pager .btn{max-width:100%}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:15}
+
+@media (max-width:859px){
+  .app{display:block}
+  .topbar{display:block}
+  .side{position:fixed;top:0;bottom:0;left:0;z-index:20;width:min(340px,88vw);padding-top:calc(22px + env(safe-area-inset-top,0px));padding-bottom:calc(32px + env(safe-area-inset-bottom,0px));transform:translateX(-100%);visibility:hidden;transition:transform .2s ease,visibility .2s}
+  .side.open{transform:none;visibility:visible}
+  .main{padding-block:20px 24px}
+  .panel{padding:16px}
+}
+/* Wide screens. The term list rests as a slim rail and opens on hover or on the menu button. */
+@media (min-width:860px){
+  .app{padding-left:56px}
+  .side{position:fixed;top:0;bottom:0;left:0;z-index:12;width:56px;padding:0;overflow:hidden;transition:width .18s ease,box-shadow .18s ease}
+  .side:hover:not(.shut),.side.pinned{width:310px;box-shadow:6px 0 28px rgba(0,0,0,.22)}
+  .railbtn{display:flex;position:fixed;top:14px;left:8px;z-index:14;width:40px;height:40px;padding:0;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:6px;background:var(--surface-2);color:var(--ink);cursor:pointer}
+  .railbtn:hover{border-color:var(--accent)}
+  .railtext{display:flex;position:fixed;top:72px;left:0;width:56px;justify-content:center;pointer-events:none;color:var(--ink-2);font-family:var(--font-display);font-weight:800;font-size:.9rem;letter-spacing:.08em;transition:opacity .12s ease}
+  .railtext span{writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap}
+  .side:hover:not(.shut) .railtext,.side.pinned .railtext{opacity:0}
+  .sidebody{width:310px;height:100%;overflow-y:auto;padding:64px 16px 32px;visibility:hidden;opacity:0;transition:opacity .15s ease,visibility 0s linear .18s}
+  .side:hover:not(.shut) .sidebody,.side.pinned .sidebody{visibility:visible;opacity:1;transition-delay:0s}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="app">
+  <aside class="side" id="side" aria-label="All terms">
+    <button class="railbtn" id="railbtn" type="button" aria-expanded="false" aria-controls="sidebody" aria-label="Show the list of terms"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg></button>
+    <div class="railtext" aria-hidden="true"><span>Stats Classroom &middot; 100 terms</span></div>
+    <div class="sidebody" id="sidebody">
+    <div class="brand">Stats Classroom</div>
+    <p class="tag" id="tag"></p>
+    <input class="search" id="q" type="search" placeholder="Search a term" aria-label="Search a term" autocomplete="off">
+    <div class="legend"><span><i class="dot" style="background:var(--accent);border-color:var(--accent)"></i>Lesson ready</span><span><i class="dot"></i>Coming soon</span></div>
+    <nav id="nav" aria-label="Terms by category"></nav>
+    <p class="none" id="none" hidden>No term matches your search.</p>
+    </div>
+  </aside>
+  <main class="main" id="main">
+    <div class="topbar"><button class="btn row" id="navopen" type="button" aria-expanded="false" aria-controls="side">Browse all 100 terms</button></div>
+    <article class="lesson" id="lesson"></article>
+    <a class="adfoot" href="https://rkmri.co/NA5AMleem25M/" target="_blank" rel="noopener noreferrer" aria-label="গবেষণা ১০১ বইটি এখনই সংগ্রহ করুন"><img src="ad-gobeshona-wide.jpg" alt="গবেষণা ১০১, সহজ ভাষায় গবেষণা। লেখক আব্দুল্লাহ আল জাবির। এখনই সংগ্রহ করুন।" width="1400" height="280"></a>
+  </main>
+</div>
+<div class="scrim" id="scrim" hidden></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- Term list ---------- */
+var CATS=[
+{name:"Basic building blocks",terms:[
+["Population","The whole group you want to learn about."],
+["Sample","The smaller group you actually collect data from."],
+["Parameter","A number that describes a whole population."],
+["Statistic","A number that describes a sample."],
+["Variable","Something that can change from one person or thing to another."],
+["Data","The values you record for your variables."],
+["Observation","One recorded case, such as one row of data."],
+["Unit of analysis","The thing you are studying, such as a student or a household."],
+["Sampling","Choosing a sample from a population."],
+["Census","Collecting data from every member of the population."]]},
+{name:"Types of data",terms:[
+["Qualitative data","Descriptions or categories, not numbers."],
+["Quantitative data","Numbers that can be measured or counted."],
+["Categorical variable","A variable whose values are groups."],
+["Nominal scale","Categories with no natural order, like gender."],
+["Ordinal scale","Categories with an order, like satisfaction level."],
+["Interval scale","Equal gaps between values but no true zero, like temperature in Celsius."],
+["Ratio scale","Equal gaps with a true zero, like income."],
+["Discrete variable","Whole-number counts, like the number of children."],
+["Continuous variable","Any value in a range, like height."],
+["Dummy variable","A category coded as 0 or 1."]]},
+{name:"Sampling ideas",terms:[
+["Random sampling","Every unit has a known chance of being picked."],
+["Simple random sampling","Everyone has an equal chance of being picked."],
+["Stratified sampling","Sampling within defined groups."],
+["Cluster sampling","Sampling whole groups, like villages."],
+["Systematic sampling","Picking every nth unit from a list."],
+["Convenience sampling","Picking whoever is easy to reach."],
+["Sampling frame","The list the sample is drawn from."],
+["Sampling error","The difference between sample and population results caused by chance."],
+["Bias","A systematic error that pushes results in one direction."],
+["Non-response","People who do not answer the survey."]]},
+{name:"Describing data",terms:[
+["Mean","The usual average. Add everything up and divide by how many there are."],
+["Median","The middle value when everything is lined up in order."],
+["Mode","The value that appears most often."],
+["Range","The largest value minus the smallest value."],
+["Variance","The average squared distance from the mean."],
+["Standard deviation","A typical distance from the mean. It shows how spread out values are."],
+["Percentile","The value below which a given percent of the data falls."],
+["Quartile","Values that split the data into four equal parts."],
+["Interquartile range","The spread of the middle half of the data."],
+["Outlier","A value that sits far away from all the others."],
+["Skewness","How lopsided a distribution is."],
+["Kurtosis","How heavy the tails of a distribution are."],
+["Frequency","How many times a value occurs."],
+["Relative frequency","Frequency shown as a proportion or percent."],
+["Coefficient of variation","The standard deviation compared to the mean."]]},
+{name:"Showing data",terms:[
+["Histogram","Bars that show how data are distributed."],
+["Bar chart","Bars that compare categories."],
+["Box plot","A picture of the median, quartiles and outliers."],
+["Scatter plot","Points that show two variables together."],
+["Line chart","Values joined by a line over time."],
+["Frequency distribution","A table of values and how often each occurs."],
+["Cross-tabulation","A table that compares two categorical variables."]]},
+{name:"Probability and distributions",terms:[
+["Probability","The chance of an event, from 0 to 1."],
+["Event","An outcome, or a set of outcomes, you care about."],
+["Random variable","A variable whose value depends on chance."],
+["Probability distribution","How probability is spread over the possible values."],
+["Normal distribution","The bell-shaped curve."],
+["Standard normal distribution","The normal curve with mean 0 and standard deviation 1."],
+["Z-score","How many standard deviations a value is from the mean."],
+["Binomial distribution","Counts of successes in repeated yes or no trials."],
+["Poisson distribution","Counts of rare events over time or space."],
+["Central limit theorem","Sample means form a bell shape as samples get larger."],
+["Law of large numbers","Sample averages move toward the true mean as data grows."],
+["Expected value","The long-run average of a random variable."]]},
+{name:"Drawing conclusions",terms:[
+["Standard error","How much a statistic changes from sample to sample."],
+["Sampling distribution","The distribution of a statistic across many samples."],
+["Confidence interval","A range that likely contains the true value."],
+["Confidence level","How sure we are, such as 95 percent."],
+["Margin of error","The plus or minus around an estimate."],
+["Hypothesis","A claim that you test with data."],
+["Null hypothesis","The claim of no effect and no difference."],
+["Alternative hypothesis","The claim that an effect or difference exists."],
+["P-value","The chance of a result like yours if nothing special is going on."],
+["Significance level","The cutoff for rejecting the null, often 0.05."],
+["Type I error","Rejecting a true null, a false alarm."],
+["Type II error","Missing a real effect, a missed detection."],
+["Statistical power","The chance of detecting a real effect."],
+["Test statistic","The number computed from data to judge a hypothesis."],
+["Degrees of freedom","How many values are free to vary."],
+["One-tailed and two-tailed tests","Testing one direction or both directions."]]},
+{name:"Common tests",terms:[
+["t-test","Compares means, usually of two groups."],
+["Z-test","Compares means or proportions when samples are large."],
+["Chi-square test","Tests whether two categorical variables are related."],
+["ANOVA","Compares the means of three or more groups."],
+["F-statistic","A ratio used in ANOVA and regression."],
+["Nonparametric test","A test that makes fewer assumptions about the data."],
+["Parametric test","A test that assumes a specific distribution."],
+["Effect size","How big a difference or relationship is."],
+["Post hoc test","A follow-up test that finds which groups differ."],
+["Normality test","A check of whether data look normally distributed."]]},
+{name:"Relationships and regression",terms:[
+["Correlation","How closely two variables move together in a straight line."],
+["Covariance","How two variables vary together."],
+["Causation","One thing actually causing another."],
+["Confounding variable","A hidden factor that affects both variables."],
+["Regression","Predicting one variable using others."],
+["Dependent variable","The outcome you want to explain."],
+["Independent variable","The factor you use to explain the outcome."],
+["R-squared","The share of variation a model explains."],
+["Residual","The gap between an actual and a predicted value."],
+["Multicollinearity","Predictors that are strongly related to each other."]]}
+];
+
+function slugify(s){return s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");}
+var ALL=[],BY={};
+CATS.forEach(function(c){c.terms.forEach(function(t){ALL.push({name:t[0],short:t[1],cat:c.name,slug:slugify(t[0])});});});
+ALL.forEach(function(t,i){t.i=i;BY[t.slug]=t;});
+
+/* ---------- Helpers ---------- */
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function fmt1(v){var r=Math.round(v*10)/10;return String(r);}
+function anchor(x,W){return x<64?"start":(x>W-64?"end":"middle");}
+function invNorm(p){
+  var t=Math.sqrt(-2*Math.log(p<0.5?p:1-p));
+  var c=[2.515517,0.802853,0.010328],d=[1.432788,0.189269,0.001308];
+  var x=t-((c[2]*t+c[1])*t+c[0])/(((d[2]*t+d[1])*t+d[0])*t+1);
+  return p<0.5?-x:x;
+}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function watch(box,cleanup,fn){
+  var last=-1;
+  if(typeof ResizeObserver==="undefined")return;
+  var ro=new ResizeObserver(function(){var w=Math.floor(box.clientWidth);if(w!==last){last=w;fn();}});
+  ro.observe(box);
+  cleanup.push(function(){ro.disconnect();});
+}
+
+/* ---------- Demo 1. Mean and median ---------- */
+function demoMean(el,cleanup,lang){
+  var bn=lang==="bn";
+  var TX=bn?{
+    hint:"প্রতিটা বিন্দু একজন ছাত্রের কুইজের নম্বর, 100-এর মধ্যে। যেকোনো বিন্দু ডানে বা বামে টেনে তার নম্বর বদলে দিন।",
+    mean:"Mean",median:"Median",count:"ছাত্রছাত্রী",
+    add:"5 পেয়েছে এমন একজন যোগ করুন",reset:"আবার প্রথম থেকে",
+    aria:"কুইজের নম্বরের number line, যেখানে mean আর median দেখানো আছে",
+    sAria:function(i){return "ছাত্র "+i+" এর নম্বর";},
+    sTitle:function(i,v){return "ছাত্র "+i+" পেয়েছে "+v;},
+    close:"Mean আর median প্রায় কাছাকাছি। নম্বরগুলো মাঝখানের চারপাশে মোটামুটি সমানভাবে ছড়িয়ে আছে।",
+    low:"এখন mean, median-এর চেয়ে কমে গেছে। একজনের খুব কম নম্বর mean-কে নিচে টেনে নামিয়েছে, কিন্তু median প্রায় জায়গাতেই আছে।",
+    high:"এখন mean, median-এর চেয়ে বেড়ে গেছে। একজনের খুব বেশি নম্বর mean-কে উপরে টেনে তুলেছে, কিন্তু median প্রায় জায়গাতেই আছে।"
+  }:{
+    hint:"Each dot is one student&#39;s quiz score out of 100. Drag a dot left or right to change that score.",
+    mean:"Mean",median:"Median",count:"Students",
+    add:"Add a student who scored 5",reset:"Reset",
+    aria:"Number line of quiz scores with the mean and median marked",
+    sAria:function(i){return "Student "+i+" score";},
+    sTitle:function(i,v){return "Student "+i+" scored "+v;},
+    close:"The mean and the median are close. The scores are fairly balanced around the middle.",
+    low:"The mean is now lower than the median. A very low score pulled the mean down, while the median stayed near the middle.",
+    high:"The mean is now higher than the median. A very high score pulled the mean up, while the median stayed near the middle."
+  };
+  var START=[55,58,60,62,65,68,70];
+  var s=START.slice(),drag=-1;
+  var L=20,RM=20,H=272;
+  el.innerHTML=
+    '<p class="hint">'+TX.hint+'</p>'+
+    '<div class="chart-box"></div>'+
+    '<div class="stats" aria-live="polite">'+
+      '<div class="stat"><div class="n b" data-k="mean"></div><div class="k">'+TX.mean+'</div></div>'+
+      '<div class="stat"><div class="n a" data-k="median"></div><div class="k">'+TX.median+'</div></div>'+
+      '<div class="stat"><div class="n" data-k="count"></div><div class="k">'+TX.count+'</div></div>'+
+    '</div>'+
+    '<p class="msg" data-k="msg" aria-live="polite"></p>'+
+    '<div class="controls"><button class="btn" type="button" data-act="add">'+TX.add+'</button><button class="btn" type="button" data-act="reset">'+TX.reset+'</button></div>';
+  var box=el.querySelector(".chart-box");
+  box.style.touchAction="none";
+  function q(k){return el.querySelector('[data-k="'+k+'"]');}
+  function calc(){
+    var sorted=s.slice().sort(function(a,b){return a-b;}),n=sorted.length;
+    var mean=s.reduce(function(a,b){return a+b;},0)/n;
+    var med=n%2?sorted[(n-1)/2]:(sorted[n/2-1]+sorted[n/2])/2;
+    return{mean:mean,med:med,n:n};
+  }
+  function render(){
+    var W=Math.max(280,Math.floor(box.clientWidth));
+    var x=function(v){return L+(W-L-RM)*v/100;};
+    var c=calc(),mx=x(c.med),ax=x(c.mean);
+    var order=s.map(function(v,i){return i;}).sort(function(a,b){return s[a]-s[b];});
+    var rows=[],pos=[];
+    order.forEach(function(i){var px=x(s[i]),r=0;while(rows[r]!==undefined&&px-rows[r]<17)r++;rows[r]=px;pos[i]={px:px,r:r};});
+    var g='<svg class="chart" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="group" aria-label="'+TX.aria+'">';
+    g+='<line class="axis" x1="'+L+'" x2="'+(W-RM)+'" y1="200" y2="200"/>';
+    for(var v=0;v<=100;v+=20){g+='<line class="axis" x1="'+x(v)+'" x2="'+x(v)+'" y1="200" y2="206"/><text class="t" x="'+x(v)+'" y="222" text-anchor="middle">'+v+'</text>';}
+    g+='<line class="medline" x1="'+mx+'" x2="'+mx+'" y1="38" y2="200"/>';
+    g+='<path class="medmark" d="M'+(mx-7)+' 24 L'+(mx+7)+' 24 L'+mx+' 38 Z"/>';
+    g+='<text class="t strong a" x="'+mx+'" y="16" text-anchor="'+anchor(mx,W)+'">Median '+fmt1(c.med)+'</text>';
+    g+='<path class="meanmark" d="M'+ax+' 228 L'+(ax-7)+' 241 L'+(ax+7)+' 241 Z"/>';
+    g+='<text class="t strong b" x="'+ax+'" y="262" text-anchor="'+anchor(ax,W)+'">Mean '+fmt1(c.mean)+'</text>';
+    s.forEach(function(v,i){
+      var p=pos[i];
+      g+='<circle class="dot-s'+(i>=START.length?' extra':'')+'" data-i="'+i+'" cx="'+p.px+'" cy="'+(180-p.r*17)+'" r="8" tabindex="0" role="slider" aria-label="'+TX.sAria(i+1)+'" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+v+'"><title>'+TX.sTitle(i+1,v)+'</title></circle>';
+    });
+    g+='</svg>';
+    box.innerHTML=g;
+    q("mean").textContent=fmt1(c.mean);
+    q("median").textContent=fmt1(c.med);
+    q("count").textContent=c.n;
+    var d=c.mean-c.med,m;
+    if(Math.abs(d)<1.5){m=TX.close;}
+    else if(d<0){m=TX.low;}
+    else{m=TX.high;}
+    q("msg").textContent=m;
+    el.querySelector('[data-act="add"]').disabled=s.length>=9;
+  }
+  box.addEventListener("pointerdown",function(e){
+    var t=e.target.closest&&e.target.closest("circle[data-i]");
+    if(!t)return;
+    drag=+t.getAttribute("data-i");
+    try{box.setPointerCapture(e.pointerId);}catch(err){}
+    e.preventDefault();
+  });
+  box.addEventListener("pointermove",function(e){
+    if(drag<0)return;
+    var r=box.getBoundingClientRect(),W=Math.max(280,Math.floor(box.clientWidth));
+    s[drag]=clamp(Math.round(100*(e.clientX-r.left-L)/(W-L-RM)),0,100);
+    render();
+  });
+  function end(){drag=-1;}
+  box.addEventListener("pointerup",end);
+  box.addEventListener("pointercancel",end);
+  box.addEventListener("keydown",function(e){
+    var t=e.target.closest&&e.target.closest("circle[data-i]");
+    if(!t)return;
+    var i=+t.getAttribute("data-i"),d=0;
+    if(e.key==="ArrowLeft"||e.key==="ArrowDown")d=-1;else if(e.key==="ArrowRight"||e.key==="ArrowUp")d=1;else return;
+    e.preventDefault();
+    s[i]=clamp(s[i]+d*(e.shiftKey?5:1),0,100);
+    render();
+    var n=box.querySelector('circle[data-i="'+i+'"]');if(n)n.focus();
+  });
+  el.addEventListener("click",function(e){
+    var b=e.target.closest&&e.target.closest("button[data-act]");
+    if(!b)return;
+    if(b.getAttribute("data-act")==="add"&&s.length<9)s.push(5);
+    if(b.getAttribute("data-act")==="reset")s=START.slice();
+    render();
+  });
+  render();
+  watch(box,cleanup,render);
+}
+
+/* ---------- Demo 2. Standard deviation ---------- */
+function demoSD(el,cleanup){
+  var n=24,z=[],i;
+  for(i=0;i<n;i++)z.push(invNorm((i+0.5)/n));
+  var sdz=Math.sqrt(z.reduce(function(a,v){return a+v*v;},0)/(n-1));
+  z=z.map(function(v){return v/sdz;});
+  var sd=8,L=20,RM=20,H=252;
+  el.innerHTML=
+    '<div class="ctl"><label for="sdr">How spread out are the scores? <span class="val" data-k="val"></span></label>'+
+    '<input id="sdr" type="range" min="3" max="20" step="1" value="8"></div>'+
+    '<div class="presets"><button class="btn" type="button" data-sd="3">Everyone similar</button><button class="btn" type="button" data-sd="9">Some variety</button><button class="btn" type="button" data-sd="20">Very mixed</button></div>'+
+    '<div class="chart-box"></div>'+
+    '<div class="swatches"><span><i class="sw d"></i>Within one standard deviation</span><span><i class="sw b"></i>Further away</span></div>'+
+    '<div class="stats" aria-live="polite">'+
+      '<div class="stat"><div class="n a" data-k="sd"></div><div class="k">Standard deviation (points)</div></div>'+
+      '<div class="stat"><div class="n" data-k="in"></div><div class="k">Students within one SD</div></div>'+
+    '</div>'+
+    '<p class="msg" data-k="msg" aria-live="polite"></p>';
+  var box=el.querySelector(".chart-box"),range=el.querySelector("#sdr");
+  function q(k){return el.querySelector('[data-k="'+k+'"]');}
+  function render(){
+    var W=Math.max(280,Math.floor(box.clientWidth));
+    var x=function(v){return L+(W-L-RM)*v/100;};
+    var vals=z.map(function(v){return 50+sd*v;});
+    var inBand=vals.filter(function(v){return Math.abs(v-50)<=sd;}).length;
+    var step=12,cols={},maxStack=0;
+    var pts=vals.map(function(v){var col=Math.round(x(v)/step);cols[col]=(cols[col]||0)+1;if(cols[col]>maxStack)maxStack=cols[col];return{col:col,k:cols[col]-1,v:v};});
+    var sp=Math.min(step,150/Math.max(1,maxStack));
+    var x1=x(50-sd),x2=x(50+sd);
+    var g='<svg class="chart" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="img" aria-label="Dot plot of 24 student scores around a mean of 50">';
+    g+='<rect class="band" x="'+x1+'" y="30" width="'+(x2-x1)+'" height="160"/>';
+    g+='<line class="meanln" x1="'+x(50)+'" x2="'+x(50)+'" y1="22" y2="190"/>';
+    g+='<text class="t strong" x="'+x(50)+'" y="14" text-anchor="middle">Mean 50</text>';
+    g+='<line class="axis" x1="'+L+'" x2="'+(W-RM)+'" y1="190" y2="190"/>';
+    for(var v=0;v<=100;v+=20){g+='<line class="axis" x1="'+x(v)+'" x2="'+x(v)+'" y1="190" y2="195"/><text class="t" x="'+x(v)+'" y="212" text-anchor="middle">'+v+'</text>';}
+    pts.forEach(function(p){
+      var inside=Math.abs(p.v-50)<=sd;
+      g+='<circle class="'+(inside?'sd-in':'sd-out')+'" cx="'+(p.col*step)+'" cy="'+(184-p.k*sp)+'" r="5.5"/>';
+    });
+    g+='<path class="brk" d="M'+x1+' 218 L'+x1+' 224 L'+x2+' 224 L'+x2+' 218"/>';
+    g+='<text class="t a strong" x="'+x(50)+'" y="242" text-anchor="middle">One standard deviation each side</text>';
+    g+='</svg>';
+    box.innerHTML=g;
+    q("val").textContent=sd+" points";
+    q("sd").textContent=sd;
+    q("in").textContent=inBand+" of "+n;
+    var m=sd<=5?"The scores are tightly packed. Almost every student scored close to 50, so the class is very similar.":
+          sd<=12?"The scores show normal variety. Some students did better and some did worse, but most are not far from 50.":
+          "The scores are widely spread. Some students did very well and some did very badly, so the class is very mixed.";
+    q("msg").textContent=m+" About "+Math.round(100*inBand/n)+" percent of students sit inside the shaded band.";
+  }
+  range.addEventListener("input",function(){sd=+range.value;render();});
+  el.addEventListener("click",function(e){
+    var b=e.target.closest&&e.target.closest("button[data-sd]");
+    if(!b)return;
+    sd=+b.getAttribute("data-sd");range.value=sd;render();
+  });
+  render();
+  watch(box,cleanup,render);
+}
+
+/* ---------- Demo 3. Correlation ---------- */
+var CORR=(function(){
+  var R=mulberry32(7),n=40,z1=[],z2=[],i;
+  function g(){var u=R(),v=R();if(u<1e-9)u=1e-9;return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+  function std(a){var m=a.reduce(function(s,v){return s+v;},0)/a.length;a=a.map(function(v){return v-m;});var sd=Math.sqrt(a.reduce(function(s,v){return s+v*v;},0)/(a.length-1));return a.map(function(v){return v/sd;});}
+  for(i=0;i<n;i++){z1.push(g());z2.push(g());}
+  z1=std(z1);z2=std(z2);
+  var c12=z1.reduce(function(s,v,k){return s+v*z2[k];},0)/(n-1);
+  z2=std(z2.map(function(v,k){return v-c12*z1[k];}));
+  return{z1:z1,z2:z2,n:n};
+})();
+
+function fmtR(r){var t=(r>0?"+":"")+r.toFixed(2);return t.replace("-","−");}
+function describeR(r){
+  var a=Math.abs(r);
+  if(a<0.1)return"No clear relationship";
+  var w=a<0.3?"Weak":a<0.6?"Moderate":a<0.85?"Strong":"Very strong";
+  return w+(r>0?" positive":" negative");
+}
+
+function demoCorr(el,cleanup){
+  var r=0.8,H=310,ML=48,MR=16,MT=14,MB=52;
+  el.innerHTML=
+    '<div class="ctl"><label for="rr">Correlation <span class="val" data-k="val"></span></label>'+
+    '<input id="rr" type="range" min="-1" max="1" step="0.05" value="0.8"></div>'+
+    '<div class="presets"><button class="btn" type="button" data-r="0.9">Rise together</button><button class="btn" type="button" data-r="0">No pattern</button><button class="btn" type="button" data-r="-0.9">One rises, one falls</button></div>'+
+    '<div class="chart-box"></div>'+
+    '<div class="stats" aria-live="polite">'+
+      '<div class="stat"><div class="n a" data-k="r"></div><div class="k">Correlation (r)</div></div>'+
+      '<div class="stat"><div class="n" data-k="word" style="font-size:1.35rem"></div><div class="k">In plain words</div></div>'+
+    '</div>'+
+    '<p class="msg" data-k="msg" aria-live="polite"></p>';
+  var box=el.querySelector(".chart-box"),range=el.querySelector("#rr");
+  function q(k){return el.querySelector('[data-k="'+k+'"]');}
+  function render(){
+    var W=Math.max(280,Math.floor(box.clientWidth)),pw=W-ML-MR,ph=H-MT-MB;
+    var X=function(h){return ML+pw*h/20;},Y=function(v){return MT+ph*(1-v/100);};
+    var k=Math.sqrt(Math.max(0,1-r*r)),pts=[],i;
+    for(i=0;i<CORR.n;i++){var a=CORR.z1[i];pts.push({h:10+3*a,s:60+12*(r*a+k*CORR.z2[i])});}
+    var mh=0,ms=0;pts.forEach(function(p){mh+=p.h;ms+=p.s;});mh/=pts.length;ms/=pts.length;
+    var sxy=0,sxx=0;pts.forEach(function(p){sxy+=(p.h-mh)*(p.s-ms);sxx+=(p.h-mh)*(p.h-mh);});
+    var b=sxy/sxx,a0=ms-b*mh;
+    var g='<svg class="chart" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="img" aria-label="Scatter plot of hours studied against exam score">';
+    g+='<defs><clipPath id="plotclip"><rect x="'+ML+'" y="'+MT+'" width="'+pw+'" height="'+ph+'"/></clipPath></defs>';
+    for(var v=0;v<=100;v+=20){g+='<line class="grid" x1="'+ML+'" x2="'+(W-MR)+'" y1="'+Y(v)+'" y2="'+Y(v)+'"/><text class="t" x="'+(ML-8)+'" y="'+(Y(v)+4)+'" text-anchor="end">'+v+'</text>';}
+    for(var h=0;h<=20;h+=5){g+='<text class="t" x="'+X(h)+'" y="'+(H-MB+20)+'" text-anchor="middle">'+h+'</text>';}
+    g+='<line class="axis" x1="'+ML+'" x2="'+(W-MR)+'" y1="'+Y(0)+'" y2="'+Y(0)+'"/><line class="axis" x1="'+ML+'" x2="'+ML+'" y1="'+MT+'" y2="'+Y(0)+'"/>';
+    g+='<g clip-path="url(#plotclip)"><line class="fit" x1="'+X(0)+'" x2="'+X(20)+'" y1="'+Y(a0)+'" y2="'+Y(a0+b*20)+'"/>';
+    pts.forEach(function(p){g+='<circle class="pt" cx="'+X(p.h)+'" cy="'+Y(p.s)+'" r="5"/>';});
+    g+='</g>';
+    g+='<text class="t strong" x="'+(ML+pw/2)+'" y="'+(H-8)+'" text-anchor="middle">Hours studied per week</text>';
+    g+='<text class="t strong" transform="translate(13 '+(MT+ph/2)+') rotate(-90)" text-anchor="middle">Exam score</text>';
+    g+='</svg>';
+    box.innerHTML=g;
+    q("val").textContent=fmtR(r);
+    q("r").textContent=fmtR(r);
+    q("word").textContent=describeR(r);
+    var m;
+    if(r>=0.1)m="Students who study more hours tend to score higher. The orange line shows that general direction.";
+    else if(r<=-0.1)m="In this made-up case, students who study more hours tend to score lower. The orange line slopes downward.";
+    else m="Knowing how many hours a student studied tells you almost nothing about the score. The dots look like a cloud.";
+    if(Math.abs(r)>=0.99)m+=" Every dot sits exactly on the line.";
+    q("msg").textContent=m;
+  }
+  range.addEventListener("input",function(){r=+range.value;render();});
+  el.addEventListener("click",function(e){
+    var b=e.target.closest&&e.target.closest("button[data-r]");
+    if(!b)return;
+    r=+b.getAttribute("data-r");range.value=r;render();
+  });
+  render();
+  watch(box,cleanup,render);
+}
+
+/* ---------- Demo 4. P-value ---------- */
+var BIN=(function(){var c=[1],k;for(k=1;k<=20;k++)c[k]=c[k-1]*(20-k+1)/k;return c.map(function(v){return v/1048576;});})();
+function pTwoSided(obs){var d=Math.abs(obs-10),p=0;for(var k=0;k<=20;k++){if(Math.abs(k-10)>=d)p+=BIN[k];}return Math.min(1,p);}
+function fmtP(p){return p>=0.001?p.toFixed(3):"less than 0.001";}
+
+function demoP(el,cleanup){
+  var heads=15,H=270,ML=46,MR=12,MT=14,MB=50;
+  el.innerHTML=
+    '<div class="ctl"><label for="hr">Heads you got out of 20 flips <span class="val" data-k="val"></span></label>'+
+    '<input id="hr" type="range" min="0" max="20" step="1" value="15"></div>'+
+    '<div class="presets"><button class="btn" type="button" data-h="10">Typical</button><button class="btn" type="button" data-h="15">Borderline</button><button class="btn" type="button" data-h="18">Suspicious</button></div>'+
+    '<p class="hint">The bars show how often each number of heads would happen if the coin is fair.</p>'+
+    '<div class="chart-box"></div>'+
+    '<div class="swatches"><span><i class="sw c"></i>Your result</span><span><i class="sw b"></i>As unusual as yours, or more</span><span><i class="sw a"></i>Less unusual</span></div>'+
+    '<div class="stats" aria-live="polite">'+
+      '<div class="stat"><div class="n" data-k="h"></div><div class="k">Heads</div></div>'+
+      '<div class="stat"><div class="n b" data-k="p"></div><div class="k">p-value</div></div>'+
+    '</div>'+
+    '<p class="msg" data-k="msg" aria-live="polite"></p>';
+  var box=el.querySelector(".chart-box"),range=el.querySelector("#hr");
+  function q(k){return el.querySelector('[data-k="'+k+'"]');}
+  function render(){
+    var W=Math.max(280,Math.floor(box.clientWidth)),pw=W-ML-MR,ph=H-MT-MB,YM=0.18;
+    var Y=function(p){return MT+ph*(1-p/YM);};
+    var slot=pw/21,bw=slot*0.78,d=Math.abs(heads-10),p=pTwoSided(heads),k;
+    var g='<svg class="chart" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="img" aria-label="Bar chart of the chance of each number of heads in 20 flips of a fair coin">';
+    [0,0.05,0.10,0.15].forEach(function(t){g+='<line class="grid" x1="'+ML+'" x2="'+(W-MR)+'" y1="'+Y(t)+'" y2="'+Y(t)+'"/><text class="t" x="'+(ML-8)+'" y="'+(Y(t)+4)+'" text-anchor="end">'+Math.round(t*100)+'%</text>';});
+    for(k=0;k<=20;k++){
+      var bx=ML+slot*k+(slot-bw)/2,ext=Math.abs(k-10)>=d;
+      g+='<rect class="bar'+(ext?' ext':'')+(k===heads?' obs':'')+'" x="'+bx+'" y="'+Y(BIN[k])+'" width="'+bw+'" height="'+(Y(0)-Y(BIN[k]))+'"/>';
+      if(k%2===0)g+='<text class="t" x="'+(bx+bw/2)+'" y="'+(Y(0)+18)+'" text-anchor="middle">'+k+'</text>';
+    }
+    g+='<line class="axis" x1="'+ML+'" x2="'+(W-MR)+'" y1="'+Y(0)+'" y2="'+Y(0)+'"/>';
+    g+='<text class="t strong" x="'+(ML+pw/2)+'" y="'+(H-8)+'" text-anchor="middle">Number of heads out of 20 flips</text>';
+    g+='</svg>';
+    box.innerHTML=g;
+    q("val").textContent=heads;
+    q("h").textContent=heads;
+    q("p").textContent=p>=0.001?p.toFixed(3):"<0.001";
+    var m;
+    if(heads===10)m="Exactly 10 heads is what you would expect from a fair coin. Every bar is shaded because no result is more ordinary than this. The p-value is 1.";
+    else if(p>=0.05)m="A fair coin gives a result like this about "+Math.round(p*100)+" times in 100. That is common enough, so there is no strong reason to doubt the coin.";
+    else m="A fair coin gives a result this unusual only about "+(p>=0.01?Math.round(p*100):"fewer than 1")+" time"+(p>=0.015?"s":"")+" in 100. That is rare, so it is evidence that the coin may not be fair.";
+    q("msg").textContent=m+" (p-value "+(p>=0.001?"= "+p.toFixed(3):"is "+fmtP(p))+")";
+  }
+  range.addEventListener("input",function(){heads=+range.value;render();});
+  el.addEventListener("click",function(e){
+    var b=e.target.closest&&e.target.closest("button[data-h]");
+    if(!b)return;
+    heads=+b.getAttribute("data-h");range.value=heads;render();
+  });
+  render();
+  watch(box,cleanup,render);
+}
+
+/* ---------- Demo 5. Histogram ---------- */
+var HIST=(function(){var R=mulberry32(11),out=[],n=40,i,v;for(i=0;i<n;i++){v=62+12.5*invNorm((i+0.5)/n)+(R()-0.5)*5;out.push(clamp(Math.round(v),0,100));}return out;})();
+
+function demoHist(el,cleanup){
+  var w=10,sel=-1,H=290,ML=40,MR=14,MT=18,MB=50;
+  el.innerHTML=
+    '<div class="ctl"><label for="hw">Bar width <span class="val" data-k="val"></span></label>'+
+    '<input id="hw" type="range" min="2" max="25" step="1" value="10"></div>'+
+    '<div class="presets"><button class="btn" type="button" data-w="2">Too narrow</button><button class="btn" type="button" data-w="10">About right</button><button class="btn" type="button" data-w="25">Too wide</button></div>'+
+    '<p class="hint">Each of the 40 students is counted in exactly one bar. Hover over a bar, or tap it, to see which scores it holds.</p>'+
+    '<div class="chart-box"></div>'+
+    '<div class="stats" aria-live="polite">'+
+      '<div class="stat"><div class="n a" data-k="nb"></div><div class="k">Bars</div></div>'+
+      '<div class="stat"><div class="n" data-k="top"></div><div class="k">Students in the tallest bar</div></div>'+
+    '</div>'+
+    '<p class="msg" data-k="msg" aria-live="polite"></p>';
+  var box=el.querySelector(".chart-box"),range=el.querySelector("#hw");
+  function q(k){return el.querySelector('[data-k="'+k+'"]');}
+  function geom(){var W=Math.max(280,Math.floor(box.clientWidth)),nb=Math.ceil(101/w);return{W:W,pw:W-ML-MR,nb:nb,D:nb*w};}
+  function counts(nb){var c=[],i;for(i=0;i<nb;i++)c.push(0);HIST.forEach(function(v){c[Math.floor(v/w)]++;});return c;}
+  function render(){
+    var g0=geom(),W=g0.W,pw=g0.pw,nb=g0.nb,D=g0.D,c=counts(nb),ph=H-MT-MB;
+    var mx=Math.max.apply(null,c),ym=Math.max(4,mx+1),st=ym<=8?1:(ym<=16?2:5),t,v;
+    ym=Math.ceil(ym/st)*st;
+    var X=function(a){return ML+pw*a/D;},Y=function(n){return MT+ph*(1-n/ym);};
+    var g='<svg class="chart" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="img" aria-label="Histogram of 40 exam scores">';
+    for(t=0;t<=ym;t+=st){g+='<line class="grid" x1="'+ML+'" x2="'+(W-MR)+'" y1="'+Y(t)+'" y2="'+Y(t)+'"/><text class="t" x="'+(ML-8)+'" y="'+(Y(t)+4)+'" text-anchor="end">'+t+'</text>';}
+    c.forEach(function(n,i){
+      var x0=X(i*w)+0.5,x1=X((i+1)*w)-0.5;
+      if(n>0)g+='<rect class="hbar'+(i===sel?' hot':'')+'" x="'+x0+'" y="'+Y(n)+'" width="'+Math.max(1,x1-x0)+'" height="'+(Y(0)-Y(n))+'"/>';
+      if(n>0&&x1-x0>=16)g+='<text class="t strong" x="'+((x0+x1)/2)+'" y="'+(Y(n)-5)+'" text-anchor="middle">'+n+'</text>';
+    });
+    g+='<line class="axis" x1="'+ML+'" x2="'+(W-MR)+'" y1="'+Y(0)+'" y2="'+Y(0)+'"/>';
+    for(v=0;v<=D&&v<=100;v+=20){g+='<line class="axis" x1="'+X(v)+'" x2="'+X(v)+'" y1="'+Y(0)+'" y2="'+(Y(0)+5)+'"/><text class="t" x="'+X(v)+'" y="'+(Y(0)+20)+'" text-anchor="middle">'+v+'</text>';}
+    g+='<text class="t strong" x="'+(ML+pw/2)+'" y="'+(H-8)+'" text-anchor="middle">Exam score</text>';
+    g+='<text class="t strong" transform="translate(11 '+(MT+ph/2)+') rotate(-90)" text-anchor="middle">Number of students</text>';
+    g+='</svg>';
+    box.innerHTML=g;
+    q("val").textContent=w+" points";
+    q("nb").textContent=nb;
+    q("top").textContent=mx;
+    var m;
+    if(sel>=0&&sel<nb){
+      var a=sel*w,b=Math.min((sel+1)*w-1,100);
+      m=c[sel]+" student"+(c[sel]===1?"":"s")+" scored from "+a+" to "+b+".";
+    }else if(w<=4){m="With very narrow bars, every small bump shows up. Most of those bumps are chance, so the picture is messy.";}
+    else if(w>=18){m="With very wide bars, the shape is hidden. You can no longer tell where most students scored.";}
+    else{m="With medium bars, the shape is clear. Most students scored somewhere around the 60s, and very high or very low scores are rare.";}
+    q("msg").textContent=m;
+  }
+  function pick(e){
+    var r=box.getBoundingClientRect(),g0=geom(),v=(e.clientX-r.left-ML)/g0.pw*g0.D,i=Math.floor(v/w);
+    return(v>=0&&i>=0&&i<g0.nb)?i:-1;
+  }
+  box.addEventListener("pointermove",function(e){var i=pick(e);if(i!==sel){sel=i;render();}});
+  box.addEventListener("pointerdown",function(e){var i=pick(e);if(i!==sel){sel=i;render();}});
+  box.addEventListener("pointerleave",function(e){if(e.pointerType==="mouse"&&sel!==-1){sel=-1;render();}});
+  range.addEventListener("input",function(){w=+range.value;sel=-1;render();});
+  el.addEventListener("click",function(e){
+    var b=e.target.closest&&e.target.closest("button[data-w]");
+    if(!b)return;
+    w=+b.getAttribute("data-w");range.value=w;sel=-1;render();
+  });
+  render();
+  watch(box,cleanup,render);
+}
+
+/* ---------- Demo 6. Normal distribution ---------- */
+function demoNormal(el,cleanup){
+  var mu=165,sd=7,k=1,H=270,ML=16,MR=16,MT=24,MB=46,LO=110,HI=220,YM=0.105,PCT=[68.3,95.4,99.7];
+  el.innerHTML=
+    '<div class="ctl"><label for="nm">Average height <span class="val" data-k="mv"></span></label><input id="nm" type="range" min="150" max="180" step="1" value="165"></div>'+
+    '<div class="ctl"><label for="ns">Spread, the standard deviation <span class="val" data-k="sv"></span></label><input id="ns" type="range" min="4" max="12" step="1" value="7"></div>'+
+    '<div class="presets"><button class="btn" type="button" data-kk="1" aria-pressed="true">Within 1 SD</button><button class="btn" type="button" data-kk="2" aria-pressed="false">Within 2 SD</button><button class="btn" type="button" data-kk="3" aria-pressed="false">Within 3 SD</button></div>'+
+    '<div class="chart-box"></div>'+
+    '<div class="stats" aria-live="polite">'+
+      '<div class="stat"><div class="n a" data-k="pct"></div><div class="k">Of students are in the shaded area</div></div>'+
+      '<div class="stat"><div class="n" data-k="rng" style="font-size:1.5rem"></div><div class="k">Shaded range</div></div>'+
+    '</div>'+
+    '<p class="msg" data-k="msg" aria-live="polite"></p>';
+  var box=el.querySelector(".chart-box"),rm=el.querySelector("#nm"),rs=el.querySelector("#ns");
+  function q(kk){return el.querySelector('[data-k="'+kk+'"]');}
+  function render(){
+    var W=Math.max(280,Math.floor(box.clientWidth)),pw=W-ML-MR,ph=H-MT-MB,h;
+    var X=function(a){return ML+pw*(a-LO)/(HI-LO);},Y=function(d){return MT+ph*(1-d/YM);};
+    var f=function(a){return Math.exp(-0.5*Math.pow((a-mu)/sd,2))/(sd*Math.sqrt(2*Math.PI));};
+    var lo=mu-k*sd,hi=mu+k*sd;
+    var curve="",area="M"+X(lo)+" "+Y(0)+" L"+X(lo)+" "+Y(f(lo));
+    for(h=LO;h<=HI;h++){curve+=(h===LO?"M":"L")+X(h)+" "+Y(f(h))+" ";}
+    for(h=lo+1;h<hi;h++){area+=" L"+X(h)+" "+Y(f(h));}
+    area+=" L"+X(hi)+" "+Y(f(hi))+" L"+X(hi)+" "+Y(0)+" Z";
+    var g='<svg class="chart" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="img" aria-label="Bell curve of student heights">';
+    g+='<path class="area" d="'+area+'"/><path class="curve" d="'+curve+'"/>';
+    g+='<line class="axis" x1="'+ML+'" x2="'+(W-MR)+'" y1="'+Y(0)+'" y2="'+Y(0)+'"/>';
+    for(h=120;h<=220;h+=20){g+='<line class="axis" x1="'+X(h)+'" x2="'+X(h)+'" y1="'+Y(0)+'" y2="'+(Y(0)+5)+'"/><text class="t" x="'+X(h)+'" y="'+(Y(0)+21)+'" text-anchor="middle">'+h+'</text>';}
+    g+='<line class="meanln" x1="'+X(mu)+'" x2="'+X(mu)+'" y1="'+(MT-2)+'" y2="'+Y(0)+'"/>';
+    g+='<text class="t strong" x="'+X(mu)+'" y="'+(MT-9)+'" text-anchor="middle">Average '+mu+' cm</text>';
+    g+='<text class="t strong" x="'+(ML+pw/2)+'" y="'+(H-6)+'" text-anchor="middle">Height in cm</text>';
+    g+='</svg>';
+    box.innerHTML=g;
+    q("mv").textContent=mu+" cm";
+    q("sv").textContent=sd+" cm";
+    q("pct").textContent=PCT[k-1]+"%";
+    q("rng").textContent=lo+" to "+hi+" cm";
+    el.querySelectorAll("[data-kk]").forEach(function(b){b.setAttribute("aria-pressed",+b.getAttribute("data-kk")===k?"true":"false");});
+    var tail=k===1?"About 32 out of 100 are further away.":k===2?"Only about 5 out of 100 are further away.":"Almost nobody is further away.";
+    q("msg").textContent="About "+PCT[k-1]+" out of 100 students are between "+lo+" cm and "+hi+" cm tall. "+tail+" Slide the spread to make the bell wider or narrower.";
+  }
+  rm.addEventListener("input",function(){mu=+rm.value;render();});
+  rs.addEventListener("input",function(){sd=+rs.value;render();});
+  el.addEventListener("click",function(e){
+    var b=e.target.closest&&e.target.closest("button[data-kk]");
+    if(!b)return;
+    k=+b.getAttribute("data-kk");render();
+  });
+  render();
+  watch(box,cleanup,render);
+}
+
+/* ---------- Demo 7. Confidence interval ---------- */
+function genSamples(rand,N,K,TRUE,SDP){
+  var out=[],j,m,u,v,s1,s2,mean,sd,x;
+  for(j=0;j<K;j++){
+    s1=0;s2=0;
+    for(m=0;m<N;m++){
+      u=rand();v=rand();if(u<1e-9)u=1e-9;
+      x=TRUE+SDP*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+      s1+=x;s2+=x*x;
+    }
+    mean=s1/N;sd=Math.sqrt(Math.max(0,(s2-N*mean*mean)/(N-1)));
+    out.push({m:mean,sd:sd});
+  }
+  return out;
+}
+function demoCI(el,cleanup){
+  var N=25,K=25,TRUE=165,SDP=8,T={80:1.318,90:1.711,95:2.064,99:2.797},level=95;
+  var samples=genSamples(mulberry32(11),N,K,TRUE,SDP);
+  var ML=16,MR=16,MT=30,MB=50,ROW=13,LO=154,HI=176,H=MT+K*ROW+MB;
+  el.innerHTML=
+    '<p class="hint">Each bar comes from one sample of 25 students. The dashed line is the true average height of all students, which you would normally never know.</p>'+
+    '<div class="presets"><button class="btn" type="button" data-lv="80" aria-pressed="false">80% confidence</button><button class="btn" type="button" data-lv="90" aria-pressed="false">90%</button><button class="btn" type="button" data-lv="95" aria-pressed="true">95%</button><button class="btn" type="button" data-lv="99" aria-pressed="false">99%</button></div>'+
+    '<div class="chart-box"></div>'+
+    '<div class="swatches"><span><i class="sw d"></i>Caught the true average</span><span><i class="sw b"></i>Missed it</span></div>'+
+    '<div class="stats" aria-live="polite">'+
+      '<div class="stat"><div class="n a" data-k="hits"></div><div class="k">Bars that caught the true average</div></div>'+
+      '<div class="stat"><div class="n" data-k="lv"></div><div class="k">Confidence level</div></div>'+
+    '</div>'+
+    '<p class="msg" data-k="msg" aria-live="polite"></p>'+
+    '<div class="controls"><button class="btn" type="button" data-act="new">Take 25 new samples</button></div>';
+  var box=el.querySelector(".chart-box");
+  function q(kk){return el.querySelector('[data-k="'+kk+'"]');}
+  function render(){
+    var W=Math.max(280,Math.floor(box.clientWidth)),pw=W-ML-MR,hits=0,v;
+    var X=function(a){return ML+pw*(a-LO)/(HI-LO);};
+    var base=MT+K*ROW+4;
+    var g='<svg class="chart" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="img" aria-label="25 confidence intervals compared with the true average">';
+    g+='<line class="truth" x1="'+X(TRUE)+'" x2="'+X(TRUE)+'" y1="'+(MT-8)+'" y2="'+base+'"/>';
+    g+='<text class="t strong" x="'+X(TRUE)+'" y="'+(MT-14)+'" text-anchor="middle">True average '+TRUE+' cm</text>';
+    samples.forEach(function(s,i){
+      var h=T[level]*s.sd/Math.sqrt(N),hit=Math.abs(s.m-TRUE)<=h,y=MT+ROW*i+ROW/2;
+      if(hit)hits++;
+      g+='<line class="ci'+(hit?'':' miss')+'" x1="'+X(s.m-h)+'" x2="'+X(s.m+h)+'" y1="'+y+'" y2="'+y+'"/>';
+      g+='<circle class="cidot'+(hit?'':' miss')+'" cx="'+X(s.m)+'" cy="'+y+'" r="3.5"/>';
+    });
+    g+='<line class="axis" x1="'+ML+'" x2="'+(W-MR)+'" y1="'+base+'" y2="'+base+'"/>';
+    for(v=156;v<=176;v+=4){g+='<line class="axis" x1="'+X(v)+'" x2="'+X(v)+'" y1="'+base+'" y2="'+(base+5)+'"/><text class="t" x="'+X(v)+'" y="'+(base+21)+'" text-anchor="middle">'+v+'</text>';}
+    g+='<text class="t strong" x="'+(ML+pw/2)+'" y="'+(H-6)+'" text-anchor="middle">Average height in cm</text>';
+    g+='</svg>';
+    box.innerHTML=g;
+    q("hits").textContent=hits+" of "+K;
+    q("lv").textContent=level+"%";
+    el.querySelectorAll("[data-lv]").forEach(function(b){b.setAttribute("aria-pressed",+b.getAttribute("data-lv")===level?"true":"false");});
+    q("msg").textContent=hits+" of 25 bars caught the true average. At "+level+"% confidence you expect about "+Math.round(K*level/100)+" out of 25, though the exact number changes from one set of samples to the next. A higher confidence level gives wider bars.";
+  }
+  el.addEventListener("click",function(e){
+    var b=e.target.closest&&e.target.closest("button");
+    if(!b)return;
+    if(b.hasAttribute("data-lv")){level=+b.getAttribute("data-lv");render();}
+    else if(b.getAttribute("data-act")==="new"){samples=genSamples(mulberry32((Date.now()^(Math.random()*4294967296))>>>0),N,K,TRUE,SDP);render();}
+  });
+  render();
+  watch(box,cleanup,render);
+}
+
+/* ---------- Demo 8. Regression ---------- */
+function demoReg(el,cleanup){
+  var START=[[2,48],[4,53],[5,60],[7,57],[9,70],[11,71],[13,82],[15,83]];
+  var pts=START.map(function(p){return p.slice();}),gaps=true,drag=-1,H=330,ML=48,MR=16,MT=14,MB=52;
+  el.innerHTML=
+    '<p class="hint">Each dot is one student. Drag a dot anywhere and watch the line and the numbers change.</p>'+
+    '<div class="chart-box"></div>'+
+    '<div class="swatches"><span><i class="sw d"></i>A student</span><span><i class="sw b"></i>Best-fit line</span><span><i class="sw f"></i>Gap between real and predicted score</span></div>'+
+    '<div class="stats" aria-live="polite">'+
+      '<div class="stat"><div class="n b" data-k="b"></div><div class="k">Points gained per extra hour</div></div>'+
+      '<div class="stat"><div class="n a" data-k="r2"></div><div class="k">R-squared</div></div>'+
+      '<div class="stat"><div class="n" data-k="pred"></div><div class="k">Predicted score at 10 hours</div></div>'+
+    '</div>'+
+    '<p class="msg" data-k="msg" aria-live="polite"></p>'+
+    '<div class="controls"><button class="btn" type="button" data-act="gaps" aria-pressed="true">Show gaps</button><button class="btn" type="button" data-act="reset">Reset</button></div>';
+  var box=el.querySelector(".chart-box");
+  box.style.touchAction="none";
+  function q(kk){return el.querySelector('[data-k="'+kk+'"]');}
+  function fit(){
+    var n=pts.length,mh=0,ms=0,sxy=0,sxx=0,syy=0;
+    pts.forEach(function(p){mh+=p[0];ms+=p[1];});mh/=n;ms/=n;
+    pts.forEach(function(p){sxy+=(p[0]-mh)*(p[1]-ms);sxx+=(p[0]-mh)*(p[0]-mh);syy+=(p[1]-ms)*(p[1]-ms);});
+    if(sxx<1e-6)return null;
+    return{b:sxy/sxx,a:ms-(sxy/sxx)*mh,r2:syy<1e-9?0:(sxy*sxy)/(sxx*syy)};
+  }
+  function render(){
+    var W=Math.max(280,Math.floor(box.clientWidth)),pw=W-ML-MR,ph=H-MT-MB,v,h;
+    var X=function(a){return ML+pw*a/20;},Y=function(a){return MT+ph*(1-a/100);};
+    var f=fit();
+    var g='<svg class="chart" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="group" aria-label="Scatter plot of hours studied against exam score with a best-fit line">';
+    g+='<defs><clipPath id="regclip"><rect x="'+ML+'" y="'+MT+'" width="'+pw+'" height="'+ph+'"/></clipPath></defs>';
+    for(v=0;v<=100;v+=20){g+='<line class="grid" x1="'+ML+'" x2="'+(W-MR)+'" y1="'+Y(v)+'" y2="'+Y(v)+'"/><text class="t" x="'+(ML-8)+'" y="'+(Y(v)+4)+'" text-anchor="end">'+v+'</text>';}
+    for(h=0;h<=20;h+=5){g+='<text class="t" x="'+X(h)+'" y="'+(H-MB+20)+'" text-anchor="middle">'+h+'</text>';}
+    g+='<line class="axis" x1="'+ML+'" x2="'+(W-MR)+'" y1="'+Y(0)+'" y2="'+Y(0)+'"/><line class="axis" x1="'+ML+'" x2="'+ML+'" y1="'+MT+'" y2="'+Y(0)+'"/>';
+    g+='<g clip-path="url(#regclip)">';
+    if(f){
+      if(gaps)pts.forEach(function(p){g+='<line class="res" x1="'+X(p[0])+'" x2="'+X(p[0])+'" y1="'+Y(p[1])+'" y2="'+Y(f.a+f.b*p[0])+'"/>';});
+      g+='<line class="fit" x1="'+X(0)+'" x2="'+X(20)+'" y1="'+Y(f.a)+'" y2="'+Y(f.a+f.b*20)+'"/>';
+    }
+    g+='</g>';
+    pts.forEach(function(p,i){
+      g+='<circle class="dot-s" data-i="'+i+'" cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="8" tabindex="0" role="slider" aria-label="Student '+(i+1)+', '+fmt1(p[0])+' hours, score '+Math.round(p[1])+'" aria-valuenow="'+Math.round(p[1])+'" aria-valuemin="0" aria-valuemax="100"><title>Student '+(i+1)+', '+fmt1(p[0])+' hours, score '+Math.round(p[1])+'</title></circle>';
+    });
+    g+='<text class="t strong" x="'+(ML+pw/2)+'" y="'+(H-8)+'" text-anchor="middle">Hours studied per week</text>';
+    g+='<text class="t strong" transform="translate(13 '+(MT+ph/2)+') rotate(-90)" text-anchor="middle">Exam score</text>';
+    g+='</svg>';
+    box.innerHTML=g;
+    var m;
+    if(f){
+      q("b").textContent=(f.b>0?"+":"")+fmt1(f.b).replace("-","−");
+      q("r2").textContent=Math.round(f.r2*100)+"%";
+      q("pred").textContent=Math.round(f.a+f.b*10);
+      m="For each extra hour of study, the line predicts about "+fmt1(Math.abs(f.b))+(f.b>=0?" more":" fewer")+" points. The line explains about "+Math.round(f.r2*100)+" percent of the differences between students.";
+      if(f.r2>0.85)m+=" That is a very close fit.";
+      else if(f.r2<0.3)m+=" The dots are scattered, so predictions from this line are rough.";
+    }else{
+      q("b").textContent="-";q("r2").textContent="-";q("pred").textContent="-";
+      m="Spread the dots out from left to right so that a line can be drawn.";
+    }
+    q("msg").textContent=m;
+    el.querySelector('[data-act="gaps"]').setAttribute("aria-pressed",gaps?"true":"false");
+  }
+  box.addEventListener("pointerdown",function(e){
+    var t=e.target.closest&&e.target.closest("circle[data-i]");
+    if(!t)return;
+    drag=+t.getAttribute("data-i");
+    try{box.setPointerCapture(e.pointerId);}catch(err){}
+    e.preventDefault();
+  });
+  box.addEventListener("pointermove",function(e){
+    if(drag<0)return;
+    var r=box.getBoundingClientRect(),W=Math.max(280,Math.floor(box.clientWidth)),pw=W-ML-MR,ph=H-MT-MB;
+    pts[drag][0]=clamp(Math.round(20*(e.clientX-r.left-ML)/pw*2)/2,0,20);
+    pts[drag][1]=clamp(Math.round(100*(1-(e.clientY-r.top-MT)/ph)),0,100);
+    render();
+  });
+  function end(){drag=-1;}
+  box.addEventListener("pointerup",end);
+  box.addEventListener("pointercancel",end);
+  box.addEventListener("keydown",function(e){
+    var t=e.target.closest&&e.target.closest("circle[data-i]");
+    if(!t)return;
+    var i=+t.getAttribute("data-i"),dx=0,dy=0;
+    if(e.key==="ArrowLeft")dx=-0.5;else if(e.key==="ArrowRight")dx=0.5;else if(e.key==="ArrowUp")dy=1;else if(e.key==="ArrowDown")dy=-1;else return;
+    e.preventDefault();
+    pts[i][0]=clamp(pts[i][0]+dx,0,20);pts[i][1]=clamp(pts[i][1]+dy*(e.shiftKey?5:1),0,100);
+    render();
+    var n=box.querySelector('circle[data-i="'+i+'"]');if(n)n.focus();
+  });
+  el.addEventListener("click",function(e){
+    var b=e.target.closest&&e.target.closest("button[data-act]");
+    if(!b)return;
+    if(b.getAttribute("data-act")==="gaps")gaps=!gaps;
+    if(b.getAttribute("data-act")==="reset")pts=START.map(function(p){return p.slice();});
+    render();
+  });
+  render();
+  watch(box,cleanup,render);
+}
+
+/* ---------- Lessons ---------- */
+var LESSONS={
+"mean":{
+  def:"The mean is the usual average. Add up all the values, then divide by how many values there are.",
+  classroom:
+    '<p>Seven students took a quiz marked out of 100. Their scores add up to 438. Divide 438 by 7 and the mean is about 62.6. When a teacher says "the class average was about 63," that is the mean.</p>'+
+    '<p>The demo also shows the median, which is the middle score when the students are lined up from lowest to highest. Add a student who scored very low and watch which of the two numbers moves more.</p>',
+  remember:"The mean uses every value, so one extreme score can pull it a long way. The median only cares about the middle, so it stays steady. Check both when a few values look very different from the rest.",
+  demo:demoMean,
+  bn:{
+    term:"গড় (Mean)",
+    labels:{classroom:"ক্লাসরুমের উদাহরণ",demo:"নিজে করে দেখুন",remember:"মনে রাখুন"},
+    def:"Mean হলো সেই জিনিস, যাকে আমরা সাধারণত গড় বলি। সবগুলো মান যোগ করে, মান কয়টা সেটা দিয়ে ভাগ দিলেই mean পাওয়া যায়।",
+    classroom:
+      '<p>ধরুন আপনি একটা ক্লাসের শিক্ষক। সাতজন ছাত্রছাত্রীর কুইজ নিলেন, নম্বর 100-এর মধ্যে। তাদের নম্বর হলো 55, 58, 60, 62, 65, 68 আর 70। সবগুলো যোগ করলে হয় 438। এবার 7 দিয়ে ভাগ দিন, পাবেন প্রায় 62.6। এটাই এই ক্লাসের mean। আপনি যখন বলেন "ক্লাসের গড় নম্বর প্রায় 63", তখন আসলে mean-এর কথাই বলছেন।</p>'+
+      '<p>নিচের demo-তে median-ও দেখানো আছে। Median হলো সবাইকে নম্বর অনুযায়ী সাজালে ঠিক মাঝখানে যার নম্বর পড়ে, সেটা। এবার একজন খুব কম নম্বর পাওয়া ছাত্র যোগ করে দেখুন, mean আর median-এর মধ্যে কোনটা বেশি নড়ে।</p>',
+    remember:"তবে মনে রাখতে হবে, mean সবগুলো মান ধরেই হিসাব করে। তাই একজনের খুব বেশি বা খুব কম নম্বর পুরো গড়টাকে টেনে নিয়ে যেতে পারে। Median শুধু মাঝখানের মানের দিকে তাকায়, তাই সেটা সহজে নড়ে না। কয়েকটা মান বাকিদের থেকে অনেক আলাদা মনে হলে দুটোই দেখে নেওয়া ভালো।"
+  }},
+"standard-deviation":{
+  def:"Standard deviation is a number that shows how spread out the values are. A small number means most values sit close to the mean. A large number means they are scattered.",
+  classroom:
+    '<p>Two classes both have an average score of 50. In Class A almost everyone scored close to 50. In Class B the scores are all over the place, from very low to very high.</p>'+
+    '<p>The averages are the same, but the classes are very different. Standard deviation puts a number on that difference. It tells you how far a typical student is from the average.</p>',
+  remember:"The same mean can hide very different groups, so always look at the spread too. When data are roughly bell shaped, about two out of three values fall within one standard deviation of the mean.",
+  demo:demoSD},
+"correlation":{
+  def:"Correlation is a number between −1 and +1. It shows how closely two things move together in a straight-line pattern.",
+  classroom:
+    '<p>A teacher notices that students who study more hours each week tend to get higher exam scores. When two things rise together like this, they have a positive correlation. If screen time went up while scores went down, that would be a negative correlation.</p>'+
+    '<p>If the two things have nothing to do with each other, the correlation is close to zero. A value of +1 or −1 means every dot sits exactly on a straight line.</p>',
+  remember:"Correlation shows that two things move together. It does not prove that one causes the other. A third thing, such as a student&#39;s motivation, could be driving both.",
+  demo:demoCorr},
+"p-value":{
+  def:"A p-value is the chance of seeing a result at least as unusual as yours if nothing special is going on. A small p-value means your result would be surprising if nothing special were happening.",
+  classroom:
+    '<p>Your class has a coin that is supposed to be fair, so heads should come up about half the time. You flip it 20 times and count the heads. Getting 10 heads feels normal. Getting 17 heads feels suspicious.</p>'+
+    '<p>The p-value tells you how suspicious. It is the chance of a result at least this far from 10 heads, if the coin really is fair.</p>',
+  remember:"A small p-value, usually below 0.05, is evidence against the idea that nothing special is going on. It does not tell you the chance that the coin is fair, and it does not tell you how big or important the difference is.",
+  demo:demoP},
+"histogram":{
+  def:"A histogram is a picture of how many values fall inside each range. Tall bars mean many values and short bars mean few.",
+  classroom:
+    '<p>A teacher has the exam scores of 40 students. A long list of numbers is hard to read. So the teacher groups the scores into ranges, such as 50 to 59 and 60 to 69, and draws one bar for each range. The taller the bar, the more students scored in that range.</p>'+
+    '<p>The size of the ranges changes how the picture looks. Try different bar widths in the demo.</p>',
+  remember:"A histogram shows the shape of your data at a glance, such as where most values sit and whether a few are unusual. Bar width matters. Bars that are too narrow look messy and bars that are too wide hide the shape. A histogram is not the same as a bar chart, which compares separate categories.",
+  demo:demoHist},
+"normal-distribution":{
+  def:"The normal distribution is the bell-shaped curve. Most values sit near the middle, and values become rarer as you move away in either direction.",
+  classroom:
+    '<p>Measure the height of every student at a university. Most students are close to the average height. Very tall students and very short students are both rare. If you draw how common each height is, you get a smooth bell that looks the same on the left and on the right.</p>',
+  remember:"A bell curve is fully described by two numbers, the mean and the standard deviation. For any normal curve, about 68 percent of values fall within one standard deviation of the mean, about 95 percent within two, and about 99.7 percent within three. Many statistical tests assume that data are roughly normal.",
+  demo:demoNormal},
+"confidence-interval":{
+  def:"A confidence interval is a range of values that is likely to contain the true value you are trying to estimate.",
+  classroom:
+    '<p>A university has 20,000 students and you want to know their true average height. You cannot measure everyone, so you measure 25 students. Their average might be 165.8 cm, but another group of 25 would give a slightly different number.</p>'+
+    '<p>So instead of giving one number, you give a range, such as 164.5 to 167.1 cm. That range is the confidence interval.</p>',
+  remember:"A 95 percent confidence interval comes from a method that catches the true value in about 95 out of 100 samples. It does not mean there is a 95 percent chance that the true value sits inside this one range. A higher confidence level gives a wider range, and a bigger sample gives a narrower one.",
+  demo:demoCI},
+"regression":{
+  def:"Regression finds the straight line that best fits the dots, so that you can predict one thing from another.",
+  classroom:
+    '<p>A teacher records the hours studied and the exam score of eight students. The line through the dots shows the general pattern. With that line, the teacher can predict the score of a student who studied 10 hours, even if no student in the data studied exactly 10 hours.</p>'+
+    '<p>The grey gaps show how far each real score is from the score the line predicts. The best line is the one that keeps these gaps as small as possible overall.</p>',
+  remember:"The slope tells you how much the prediction changes for each extra unit, here each extra hour. R-squared tells you how much of the difference between students the line explains. A line can predict well without proving that studying causes the higher scores.",
+  demo:demoReg}
+};
+
+/* ---------- Sidebar ---------- */
+var nav=document.getElementById("nav"),side=document.getElementById("side"),scrim=document.getElementById("scrim");
+var navopen=document.getElementById("navopen"),qbox=document.getElementById("q"),none=document.getElementById("none");
+var readyCount=Object.keys(LESSONS).length;
+document.getElementById("tag").textContent="100 statistics terms explained with students, classrooms and a university. "+readyCount+" lessons are ready in this prototype.";
+CATS.forEach(function(c){
+  var d=document.createElement("details");d.className="cat";
+  var items=c.terms.map(function(t){
+    var sl=slugify(t[0]),ok=!!LESSONS[sl];
+    return '<li class="'+(ok?'ready':'')+'" data-name="'+t[0].toLowerCase()+'"><a href="#'+sl+'" data-slug="'+sl+'"><span class="dot" aria-hidden="true"></span><span>'+t[0]+'</span>'+(ok?'<span class="sr"> lesson ready</span>':'')+'</a></li>';
+  }).join("");
+  d.innerHTML='<summary><span>'+c.name+'</span><span class="count">'+c.terms.length+'</span></summary><ul class="terms">'+items+'</ul>';
+  nav.appendChild(d);
+});
+qbox.addEventListener("input",function(){
+  var v=qbox.value.trim().toLowerCase(),total=0;
+  nav.querySelectorAll("details.cat").forEach(function(d){
+    var any=0;
+    d.querySelectorAll("li").forEach(function(li){var m=!v||li.getAttribute("data-name").indexOf(v)>-1;li.hidden=!m;if(m)any++;});
+    d.hidden=!any;total+=any;
+    if(v&&any)d.open=true;
+  });
+  none.hidden=total>0;
+});
+function openNav(o){
+  side.classList.toggle("open",o);scrim.hidden=!o;
+  navopen.setAttribute("aria-expanded",o?"true":"false");
+}
+navopen.addEventListener("click",function(){openNav(true);});
+scrim.addEventListener("click",function(){openNav(false);});
+var railbtn=document.getElementById("railbtn");
+function pinRail(o){
+  side.classList.toggle("pinned",o);
+  if(o)side.classList.remove("shut");
+  railbtn.setAttribute("aria-expanded",o?"true":"false");
+  railbtn.setAttribute("aria-label",o?"Hide the list of terms":"Show the list of terms");
+}
+railbtn.addEventListener("click",function(){pinRail(!side.classList.contains("pinned"));});
+side.addEventListener("mouseleave",function(){side.classList.remove("shut");});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){openNav(false);pinRail(false);}});
+nav.addEventListener("click",function(e){
+  if(!e.target.closest("a"))return;
+  openNav(false);
+  pinRail(false);
+  side.classList.add("shut");
+});
+
+/* ---------- Lesson view ---------- */
+var main=document.getElementById("main"),lesson=document.getElementById("lesson"),cleanup=[],LANG="en",CUR="mean";
+lesson.addEventListener("click",function(e){
+  var b=e.target.closest&&e.target.closest("button[data-lang]");
+  if(!b)return;
+  LANG=b.getAttribute("data-lang");
+  show(CUR,false);
+  var nb=lesson.querySelector('button[data-lang="'+LANG+'"]');if(nb)nb.focus();
+});
+function pagerLink(t,dir,bn){
+  if(!t)return "<span></span>";
+  return '<a class="btn" href="#'+t.slug+'"><small>'+(bn?(dir<0?"← আগের":"পরের →"):(dir<0?"← Previous":"Next →"))+'</small><span>'+t.name+'</span></a>';
+}
+function show(slug,scroll){
+  cleanup.forEach(function(f){f();});cleanup=[];
+  CUR=slug;
+  var t=BY[slug],L=LESSONS[slug],hasBn=!!(L&&L.bn),bn=hasBn&&LANG==="bn",C=bn?L.bn:L;
+  lesson.setAttribute("lang",bn?"bn":"en");
+  var pager='<div class="pager">'+pagerLink(ALL[t.i-1],-1,bn)+pagerLink(ALL[t.i+1],1,bn)+'</div>';
+  var langs=hasBn?'<div class="langs" role="group" aria-label="Language"><button class="btn row sm" type="button" data-lang="en" aria-pressed="'+(!bn)+'">English</button><button class="btn row sm" type="button" data-lang="bn" aria-pressed="'+bn+'">বাংলা</button></div>':'';
+  var html='<header class="head"><div class="toprow"><div class="crumb">'+t.cat+'</div>'+langs+'</div><h1 class="term">'+(bn?C.term:t.name)+'</h1><p class="def">'+(L?C.def:t.short)+'</p></header>';
+  if(L){
+    var lb=bn?C.labels:{classroom:"Classroom example",demo:"Try it yourself",remember:"Remember"};
+    html+='<section class="sec"><h2 class="label">'+lb.classroom+'</h2>'+C.classroom+'</section>'+
+      '<section class="panel demo"><h2 class="label">'+lb.demo+'</h2><div id="demo"></div></section>'+
+      '<section class="remember"><h2 class="label">'+lb.remember+'</h2><p>'+C.remember+'</p></section>';
+  }else{
+    html+='<section class="panel soon"><h2 class="label">Full lesson coming soon</h2><p>This term will get a plain-language explanation, a simple example with students and a university, and a small interactive demo. Open any term with a filled dot in the list to see how a finished lesson works.</p></section>';
+  }
+  lesson.innerHTML=html+pager;
+  if(L)L.demo(document.getElementById("demo"),cleanup,bn?"bn":"en");
+  nav.querySelectorAll("a[aria-current]").forEach(function(a){a.removeAttribute("aria-current");});
+  var a=nav.querySelector('a[data-slug="'+slug+'"]');
+  if(a){
+    a.setAttribute("aria-current","page");
+    var det=a.closest("details");if(det)det.open=true;
+    try{a.scrollIntoView({block:"nearest"});}catch(err){}
+  }
+  if(scroll)main.scrollTop=0;
+}
+function route(initial){
+  var h=decodeURIComponent(location.hash.slice(1));
+  show(BY[h]?h:"mean",!initial);
+}
+window.addEventListener("hashchange",function(){route(false);});
+route(true);
+})();
+</script>
