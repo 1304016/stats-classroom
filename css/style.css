@@ -116,17 +116,21 @@ details.cat[open] summary::after{content:"\2212"}
 .homelink[aria-current="page"]{background:var(--accent);color:var(--accent-ink)}
 /* Home page */
 .hero-title{font-family:var(--font-display);font-weight:800;font-size:clamp(2.4rem,8vw,4rem);line-height:1.1;margin:0}
-.typer{margin:12px 0 0;min-height:3.4em;font-size:clamp(1.15rem,3.4vw,1.6rem);line-height:1.7;font-weight:700;color:var(--accent)}
+.quote{display:grid;margin-top:16px}
+.quote>*{grid-area:1/1;min-width:0}
+.qghost{visibility:hidden}
+.qtext{margin:0;font-family:var(--font-body);font-weight:700;font-size:clamp(1.1rem,3vw,1.5rem);line-height:1.5;color:var(--accent)}
+.qby{margin:6px 0 0;font-family:var(--font-body);font-size:.95rem;line-height:1.5;color:var(--ink-2);opacity:0;transition:opacity .6s ease}
+.qby.on{opacity:1}
 .cursor{display:inline-block;width:2px;height:1.1em;margin-left:2px;vertical-align:-.15em;background:currentColor;animation:blink 1s steps(1) infinite}
 @keyframes blink{50%{opacity:0}}
 .intro{margin:8px 0 0;max-width:60ch;font-size:1.1rem}
 .cta{margin-top:20px;background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700;padding:10px 24px}
 .cta:hover{border-color:var(--ink)}
-.cards{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:16px}
-.card{display:flex;flex-direction:column;gap:2px;padding:16px 18px;background:var(--surface);border:1px solid var(--line);border-radius:8px;color:var(--ink);text-decoration:none}
-.card:hover{border-color:var(--accent)}
-.card-name{font-weight:700;font-size:1.1rem;line-height:1.6}
-.card-meta{font-size:.9rem;color:var(--ink-2);line-height:1.6}
+.cards{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin-top:12px}
+.card{display:flex;align-items:center;min-height:56px;padding:10px 18px;background:var(--surface);border:1px solid var(--line);border-radius:8px;color:var(--ink);text-decoration:none;font-weight:700;line-height:1.5}
+.card:hover{border-color:var(--accent);color:var(--accent)}
+.banner[hidden]{display:none}
 @media (min-width:560px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (min-width:900px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .label{margin:0;font-size:.95rem;font-weight:700;color:var(--ink-2);line-height:1.6}
@@ -232,3 +236,4 @@ input[type=range]{width:100%;min-height:30px;accent-color:var(--accent);margin:0
   .side:hover:not(.shut) .sidebody,.side.pinned .sidebody{visibility:visible;opacity:1;transition-delay:0s}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}.cursor{animation:none}}
+.banner[hidden]+.footrow{margin-top:40px}

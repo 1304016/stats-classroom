@@ -77,7 +77,8 @@ side.addEventListener("click",function(e){
   side.classList.add("shut");
 });
 
-/* Lesson view */
+/* Lesson view. The book banner shows on lesson pages only. */
+var bannerEl=document.querySelector(".banner");
 var main=document.getElementById("main"),lesson=document.getElementById("lesson"),cleanup=[];
 function pagerLink(t,label){
   if(!t)return "<span></span>";
@@ -85,6 +86,7 @@ function pagerLink(t,label){
 }
 function para(t){return "<p>"+esc(t)+"</p>";}
 function show(slug,scroll){
+  bannerEl.hidden=false;
   cleanup.forEach(function(f){f();});cleanup=[];
   var t=BY[slug],L=LESSONS[slug];
   var html='<header class="head"><div class="crumb">'+esc(t.cat)+'</div><h1 class="term">'+esc(title(t))+'</h1><p class="def">'+esc(L?L.def:t.meaning)+'</p></header>';
@@ -110,21 +112,23 @@ function segments(str){
   if(window.Intl&&Intl.Segmenter){return Array.from(new Intl.Segmenter("bn",{granularity:"grapheme"}).segment(str),function(x){return x.segment;});}
   return Array.from(str);
 }
-/* Typewriter. Types grapheme clusters so Bengali conjuncts never break. */
-function typewriter(el,lines,label){
+/* Typewriter. Types grapheme clusters so Bengali conjuncts never break. Shows the speaker name after each quote. */
+function typewriter(el,quotes){
   var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var text=el.querySelector(".typer-text"),cur=el.querySelector(".cursor");
-  if(reduce){text.textContent=lines[0];el.setAttribute("aria-label",lines[0]);cur.hidden=true;return;}
-  var segs=lines.map(segments),li=0,n=0,timer=0;
+  var text=el.querySelector(".typer-text"),cur=el.querySelector(".cursor"),by=el.querySelector(".qlive .qby");
+  function label(q){return tpl(UI.quoteLabel,{q:q.q,by:q.by});}
+  if(reduce){text.textContent=quotes[0].q;by.textContent=quotes[0].by;by.classList.add("on");cur.hidden=true;el.setAttribute("aria-label",label(quotes[0]));return;}
+  var segs=quotes.map(function(q){return segments(q.q);}),li=0,n=0,timer=0;
   function draw(){text.textContent=segs[li].slice(0,n).join("");}
   function typeStep(){
-    el.setAttribute("aria-label",lines[li]);
+    if(n===0){el.setAttribute("aria-label",label(quotes[li]));by.textContent=quotes[li].by;}
     n++;draw();
-    if(n>=segs[li].length)timer=setTimeout(eraseStep,2500);else timer=setTimeout(typeStep,60);
+    if(n>=segs[li].length){by.classList.add("on");timer=setTimeout(eraseStep,3000);}else timer=setTimeout(typeStep,40);
   }
   function eraseStep(){
-    n=Math.max(0,n-2);draw();
-    if(n===0){li=(li+1)%lines.length;timer=setTimeout(typeStep,350);}else timer=setTimeout(eraseStep,25);
+    by.classList.remove("on");
+    n=Math.max(0,n-3);draw();
+    if(n===0){li=(li+1)%quotes.length;timer=setTimeout(typeStep,500);}else timer=setTimeout(eraseStep,15);
   }
   typeStep();
   cleanup.push(function(){clearTimeout(timer);});
@@ -133,15 +137,16 @@ function showHome(scroll){
   cleanup.forEach(function(f){f();});cleanup=[];
   var first=ALL.filter(function(t){return LESSONS[t.slug];})[0];
   var cards=TERMS.map(function(c){
-    var ready=c.terms.filter(function(t){return LESSONS[t.slug];}).length;
-    return '<a class="card" href="#'+c.terms[0].slug+'"><span class="card-name">'+esc(c.name)+'</span><span class="card-meta">'+esc(tpl(UI.cardTerms,{n:c.terms.length}))+' · '+esc(tpl(UI.cardReady,{n:ready}))+'</span></a>';
+    return '<a class="card" href="#'+c.terms[0].slug+'">'+esc(c.name)+'</a>';
   }).join("");
+  var ghosts=UI.quotes.map(function(q){return '<div class="qghost" aria-hidden="true"><p class="qtext">'+esc(q.q)+'</p><p class="qby">'+esc(q.by)+'</p></div>';}).join("");
   lesson.innerHTML='<section class="hero"><h1 class="hero-title">'+esc(UI.brand)+'</h1>'+
-    '<p class="typer" role="img"><span class="typer-text" aria-hidden="true"></span><span class="cursor" aria-hidden="true"></span></p>'+
+    '<div class="quote" role="img"><div class="qlive" aria-hidden="true"><p class="qtext"><span class="typer-text"></span><span class="cursor"></span></p><p class="qby"></p></div>'+ghosts+'</div>'+
     '<p class="intro">'+esc(UI.intro)+'</p>'+
     '<a class="btn cta" href="#'+first.slug+'">'+esc(UI.start)+'</a></section>'+
     '<section><h2 class="label">'+esc(UI.catsTitle)+'</h2><div class="cards">'+cards+'</div></section>';
-  typewriter(lesson.querySelector(".typer"),UI.taglines);
+  typewriter(lesson.querySelector(".quote"),UI.quotes);
+  bannerEl.hidden=true;
   document.title=UI.docTitle;
   markCurrent(null);
   if(scroll)main.scrollTop=0;
