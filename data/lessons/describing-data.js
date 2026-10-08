@@ -176,18 +176,18 @@ Object.assign(window.LESSONS,{
   example:[
     "ধরুন দুটো ক্লাসের গড় নম্বর 50, আর standard deviation 15, দুটোই একই। A ক্লাসের নম্বর ঠিক normal curve-এর মতো ছড়ানো। B ক্লাসে বেশিরভাগ ছাত্র মাঝখানের কাছে, কিন্তু কয়েকজন প্রায় 0 বা প্রায় 100 পেয়েছে।",
     "দুই ক্লাসের mean আর standard deviation এক, তবু B ক্লাসের kurtosis বেশি, কারণ তার লেজ ভারী। নিচের demo-তে slider টেনে লেজ ভারী করে দেখুন।"],
-  remember:"তবে মনে রাখতে হবে, kurtosis বেশি মানে curve চোখা, এভাবে ভাবা ঠিক না। আসল ব্যাপার হলো লেজ, মানে চরম মান কতটা বেশি আসে। Normal curve-এর kurtosis 3, তাই অনেক software এই 3 বাদ দিয়ে excess kurtosis দেখায়।",
+  remember:"তবে মনে রাখতে হবে, kurtosis বেশি মানে শুধু curve-এর মাঝখান উঁচু আর সরু, এভাবে ভাবা ঠিক না। আসল ব্যাপার হলো লেজ, মানে চরম মান কতটা বেশি আসে। Normal curve-এর kurtosis 3, তাই অনেক software এই 3 বাদ দিয়ে excess kurtosis দেখায়।",
   demo:{id:"shape",family:"tails",start:6,ui:{
-    hint:"কালো ড্যাশ দেওয়া line হলো normal curve। Mean সব সময় 50 আর standard deviation সব সময় 15। কমলা অংশ হলো গড় থেকে 3 standard deviation-এর বাইরের লেজ, যেটা খুব সরু হলেও আছে।",
-    label:"লেজ কতটা ভারী",zero:"normal curve",valTail:"স্তর {v}",
-    presets:[[0,"Normal curve"],[4,"কিছুটা ভারী লেজ"],[12,"খুব ভারী লেজ"]],
+    hint:"কালো ড্যাশ দেওয়া line হলো normal curve। Mean সব সময় 50 আর standard deviation সব সময় 15। কমলা অংশ হলো গড় থেকে 3 standard deviation-এর বাইরের লেজ। নিচের zoom করা ছবিতে ডান লেজটা বড় করে দেখানো হয়েছে।",
+    label:"লেজ কতটা ভারী, লেভেল",zero:"0",valTail:"{v}",zoomHint:"ডান লেজ zoom করে দেখুন। কমলা অংশ হলো গড় থেকে 3 standard deviation-এর বাইরের মান।",zoom3:"3 SD",zoomAria:"ডান লেজের zoom করা ছবি, যেখানে ডেটার curve আর normal curve তুলনা করা হয়েছে",
+    presets:[[0,"Normal curve"],[8,"কিছুটা ভারী লেজ"],[20,"অনেক ভারী লেজ"]],
     swatches:[["b","গড় থেকে 3 standard deviation-এর বাইরের অংশ"],["f","তুলনার জন্য normal curve"]],
     stats:["kurt","tail"],cls:{kurt:"a",tail:"b"},
     kurt:"Kurtosis (normal curve-এ 3)",tail:"3 SD-র বাইরে থাকা মান",meanMark:"Mean 50",
     aria:"একটা curve, যার লেজ কতটা ভারী তা normal curve-এর সাথে তুলনা করা হয়েছে",
-    normalMsg:"এটা normal curve। গড় থেকে 3 standard deviation-এর বাইরে প্রায় {nt} শতাংশ মান থাকে।",
-    mild:"লেজ একটু ভারী হয়েছে। গড় থেকে 3 standard deviation-এর বাইরে এখন {tail} শতাংশ মান, normal curve-এ যা {nt} শতাংশ।",
-    heavy:"লেজ অনেক ভারী। গড় থেকে 3 standard deviation-এর বাইরে এখন {tail} শতাংশ মান, normal curve-এ যা {nt} শতাংশ। Standard deviation একই থাকায় মাঝখানের curve-টাও একটু উঁচু হয়েছে।"}}}
+    near:"লেজ প্রায় normal curve-এর মতো। গড় থেকে 3 standard deviation-এর বাইরে এখন {tail} শতাংশ মান আছে, আর normal curve-এ আছে {nt} শতাংশ।",
+    mild:"লেজ কিছুটা ভারী। গড় থেকে 3 standard deviation-এর বাইরে এখন {tail} শতাংশ মান আছে, আর normal curve-এ আছে {nt} শতাংশ।",
+    heavy:"লেজ অনেক ভারী। গড় থেকে 3 standard deviation-এর বাইরে এখন {tail} শতাংশ মান আছে, আর normal curve-এ আছে {nt} শতাংশ।"}}}
 
 ,
 "frequency":{
