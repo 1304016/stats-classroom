@@ -98,6 +98,11 @@ function seeded(cfg,seed){
   c.seed=seed;
   return c;
 }
+/* A definition is a string (one paragraph, shown as before) or a list of strings (shown as separate short paragraphs). */
+function defHtml(d){
+  if(!Array.isArray(d))return '<p class="def">'+esc(d)+'</p>';
+  return '<div class="def long">'+d.map(function(x){return '<p>'+esc(x)+'</p>';}).join("")+'</div>';
+}
 function pagerLink(t,label){
   if(!t)return "<span></span>";
   return '<a class="btn" href="#'+t.slug+'"><small>'+esc(label)+'</small><span>'+esc(t.bn)+'</span></a>';
@@ -108,7 +113,7 @@ function show(slug,scroll){
   armBanner(SHOW_BANNER);
   cleanup.forEach(function(f){f();});cleanup=[];
   var t=BY[slug],L=LESSONS[slug];
-  var html='<header class="head"><div class="crumb">'+esc(t.cat)+'</div><h1 class="term">'+esc(title(t))+'</h1><p class="def">'+esc(L?L.def:t.meaning)+'</p></header>';
+  var html='<header class="head"><div class="crumb">'+esc(t.cat)+'</div><h1 class="term">'+esc(title(t))+'</h1>'+defHtml(L?L.def:t.meaning)+'</header>';
   if(L){
     html+='<section class="sec"><h2 class="label">'+esc(UI.labels.classroom)+'</h2>'+L.example.map(para).join("")+'</section>'+
       '<section class="panel demo"><h2 class="label">'+esc(UI.labels.demo)+'</h2><div id="demo"></div></section>'+
