@@ -5,8 +5,8 @@
 var SC=window.SC,esc=SC.esc,tpl=SC.tpl;
 
 window.DEMOS.sorting=function(el,cleanup,cfg){
-  var S=cfg.ui,items=cfg.items,B=cfg.boxes,N=items.length,at,drag=null,msgText=S.start;
-  function reset(){at=items.map(function(){return 0;});}
+  var S=cfg.ui,items=cfg.items,B=cfg.boxes,N=items.length,at,first,pend=null,drag=null,msgText=S.start;
+  function reset(){at=items.map(function(){return 0;});first=items.map(function(){return null;});pend=null;}
   reset();
   function zoneName(z){return z===0?S.poolName:B[z-1].name;}
   function boxName(id){return B.filter(function(b){return b.id===id;})[0].name;}
@@ -38,14 +38,24 @@ window.DEMOS.sorting=function(el,cleanup,cfg){
     q("msg").textContent=msgText;
     el.querySelector('[data-act="reset"]').disabled=left===N;
   }
-  function place(i,z){
+  function settle(){if(pend){if(first[pend.i]===null)first[pend.i]=pend.ok;pend=null;}}
+  function place(i,z,key){
     var it=items[i],ok;
     at[i]=z;
+    /* "First try" counting. Arrow keys pass through boxes on the way, so a quick run of key presses counts as one move. */
+    var now=Date.now();
+    if(pend&&pend.i!==i)settle();
+    if(z===0){if(pend&&pend.i===i&&now-pend.t<800)pend=null;}
+    else if(first[i]===null){
+      if(key){if(pend&&pend.i===i&&now-pend.t<800){pend.ok=isRight(i);pend.t=now;}else{settle();pend={i:i,ok:isRight(i),t:now};}}
+      else{settle();first[i]=isRight(i);}
+    }
     if(z===0)msgText=tpl(S.back,{t:it.t});
     else if(isRight(i))msgText=tpl(S.right,{t:it.t,why:it.why,box:B[z-1].name});
     else msgText=tpl(S.wrong,{t:it.t,why:it.why,box:B[z-1].name,good:boxName(it.box)});
     ok=items.filter(function(x,k){return isRight(k);}).length;
-    if(ok===N)msgText+=" "+tpl(S.done,{N:N});
+    if(ok===N)settle();
+    if(ok===N)msgText+=" "+tpl(S.done,{N:N,n:first.filter(Boolean).length});
     render();
   }
   function zoneAt(x,y,skip){
@@ -102,7 +112,7 @@ window.DEMOS.sorting=function(el,cleanup,cfg){
     e.preventDefault();
     var z=Math.max(0,Math.min(B.length,at[i]+d));
     if(z===at[i])return;
-    place(i,z);
+    place(i,z,true);
     var again=el.querySelector('.chip[data-i="'+i+'"]');
     if(again)again.focus();
   });

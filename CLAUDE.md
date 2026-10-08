@@ -76,16 +76,17 @@ Do not create or push anything to GitHub other than what Phase 1 below says.
 9. Stop and wait for my review.
 
 ## Status
-Phase 1 is done and 36 of the 100 lessons are written. Work is one category at a time, then stop and wait for review.
+Phase 1 is done and 41 of the 100 lessons are written. Work is one category at a time, then stop and wait for review.
 
 ### Lessons finished
 - Basic building blocks (বেসিক কনসেপ্ট), 10 of 10. population, sample, parameter, statistic, variable, data, observation, unit-of-analysis, sampling, census.
 - Describing data (ডেসক্রিপটিভ স্ট্যাটিস্টিকস), 15 of 15. mean, median, mode, range, variance, standard-deviation, percentile, quartile, interquartile-range, outlier, skewness, kurtosis, frequency, relative-frequency, coefficient-of-variation.
+- Data types (ডেটা টাইপ), 10 of 10. qualitative-data, quantitative-data, categorical-variable, nominal-scale, ordinal-scale, interval-scale, ratio-scale, discrete-variable, continuous-variable, dummy-variable. All use the sorting demo template (js/demos/sorting.js).
 - Lessons brought over from the prototype, now in Bengali, 6 more. histogram (Showing data), normal-distribution (Probability), p-value and confidence-interval (Drawing conclusions), correlation and regression (Relationships). These sit in their own categories, so those categories are otherwise still open.
 - Every other term shows its one line meaning and the note "এই পাঠ শিগগিরই আসছে"।
 
 ### Next work
-Data types (ডেটা টাইপ), step 1 of 2 is done (qualitative-data, quantitative-data, categorical-variable, nominal-scale, ordinal-scale, demo template js/demos/sorting.js). Step 2 is next, the other 5 terms (interval-scale, ratio-scale, discrete-variable, continuous-variable, dummy-variable). Then the rest in sidebar order. After each step stop, list what was added, and wait for review. Before and after writing a lesson, check the text against the word list at the end of BANGLA_STYLE.md.
+Data types is finished. Next is the rest in sidebar order, starting with Sampling ideas (স্যাম্পলিং). After each step stop, list what was added, and wait for review. Before and after writing a lesson, check the text against the word list at the end of BANGLA_STYLE.md.
 
 ### Open for the author's review
 - The Census lesson example and demo (lost exam papers story, time only, 20000 students case). Rewritten again on request (1 minute per person, 40 minutes, 20000 students about 14 days), not yet reviewed.
@@ -98,5 +99,5 @@ Data types (ডেটা টাইপ), step 1 of 2 is done (qualitative-data, q
 - Facebook footer icon. Shows on every page including home.
 - Analytics. Not installed yet. The choice is now Google Analytics (GA4), and the Measurement ID has not arrived. index.html has an HTML comment where the GA4 snippet will go once the ID is available. (Decision 8 above still names GoatCounter and Cloudflare, which is now out of date.)
 - Theme. Light and dark toggle in the top bar, saved in localStorage.
-- Demo templates in js/demos. dots, spread (describing.js), shape (skew and kurtosis), tally (frequency), grid (students), columns (table), units (unit of analysis), plus the prototype ones for histogram, bell curve, p-value, confidence interval, correlation and regression.
+- Demo templates in js/demos. sorting (types of data, drag into boxes, with a "first try" count), dots, spread (describing.js), shape (skew and kurtosis), tally (frequency), grid (students), columns (table), units (unit of analysis), plus the prototype ones for histogram, bell curve, p-value, confidence interval, correlation and regression.
 - Words. All visible text lives in data/. The banned and replacement word list is at the end of BANGLA_STYLE.md.
