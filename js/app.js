@@ -75,7 +75,7 @@ side.addEventListener("click",function(e){
 });
 
 /* Lesson view. The book banner shows on lesson pages only. */
-var bannerEl=document.querySelector(".banner"),bannerIO=null;
+var bannerEl=document.querySelector(".banner"),bannerIO=null,SHOW_BANNER=UI.showBanner===true;
 function armBanner(on){
   if(bannerIO){bannerIO.disconnect();bannerIO=null;}
   bannerEl.classList.remove("reveal","in");
@@ -94,8 +94,8 @@ function pagerLink(t,label){
 }
 function para(t){return "<p>"+esc(t)+"</p>";}
 function show(slug,scroll){
-  bannerEl.hidden=false;
-  armBanner(true);
+  bannerEl.hidden=!SHOW_BANNER;
+  armBanner(SHOW_BANNER);
   cleanup.forEach(function(f){f();});cleanup=[];
   var t=BY[slug],L=LESSONS[slug];
   var html='<header class="head"><div class="crumb">'+esc(t.cat)+'</div><h1 class="term">'+esc(title(t))+'</h1><p class="def">'+esc(L?L.def:t.meaning)+'</p></header>';

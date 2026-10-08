@@ -93,10 +93,10 @@ Data types (ডেটা টাইপ), 10 terms, in two steps of 5 each. Then t
 - Numbers and texts the author has not confirmed yet are flagged in each step's hand-over note. Examples are the made-up 40 scores (mean 62.5), the 8-student sample (mean 58.75), the kurtosis slider range, and the Bengali term names in data/terms.js.
 
 ### What is running and where
-- Site. Plain static files. Work happens on branch claude/elegant-bohr-443vy9 and is pushed to main as well. GitHub Pages is not confirmed live. It has to be switched on by the author (Settings, Pages, deploy from main, root), and no live URL has been loaded from here.
-- Bottom banner. It shows on lesson pages only, with a scroll-reveal effect, and is hidden on the home page by code in js/app.js. There is no showBanner switch or setting anywhere in the code. If the author wants one, it still has to be built.
+- Site. Plain static files. Work happens on branch claude/elegant-bohr-443vy9 and is pushed to main as well. GitHub Pages is on and the site is live at https://1304016.github.io/stats-classroom/ (reported by the author, not loaded from here).
+- Bottom banner. There is now a switch, showBanner in data/ui.js, and its value is false. So the banner is hidden on every lesson page for now, and the footer row moves up into its place. The author will set it to true himself in about two days. When true, the banner comes back on lesson pages with its scroll-reveal effect, link and alt text. It is never shown on the home page. The banner markup and image are still in the code.
 - Facebook footer icon. Shows on every page including home.
-- Analytics. Not installed. index.html only has an HTML comment where a GoatCounter or Cloudflare Web Analytics snippet would go. Google Analytics was never added.
+- Analytics. Not installed yet. The choice is now Google Analytics (GA4), and the Measurement ID has not arrived. index.html has an HTML comment where the GA4 snippet will go once the ID is available. (Decision 8 above still names GoatCounter and Cloudflare, which is now out of date.)
 - Theme. Light and dark toggle in the top bar, saved in localStorage.
 - Demo templates in js/demos. dots, spread (describing.js), shape (skew and kurtosis), tally (frequency), grid (students), columns (table), units (unit of analysis), plus the prototype ones for histogram, bell curve, p-value, confidence interval, correlation and regression.
 - Words. All visible text lives in data/. The banned and replacement word list is at the end of BANGLA_STYLE.md.
