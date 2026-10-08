@@ -1,7 +1,7 @@
 /* Every fixed UI string. Bengali only for now. Another language can replace this file. */
 window.UI={
-  /* বইয়ের banner দেখানোর সুইচ। দেখাতে চাইলে নিচের false-এর জায়গায় true লিখুন (ছোট হাতের অক্ষরে, কোনো উদ্ধৃতি চিহ্ন ছাড়া)। লুকাতে চাইলে আবার false লিখুন। এটা শুধু lesson পাতায় কাজ করে, হোম পাতায় banner কখনো থাকে না। */
-  showBanner:false,
+  /* বইয়ের banner দেখানোর সুইচ। এখন true, তাই lesson পাতায় banner দেখাচ্ছে। লুকাতে চাইলে true-এর জায়গায় false লিখুন (ছোট হাতের অক্ষরে, কোনো উদ্ধৃতি চিহ্ন ছাড়া), তখন footer row উপরে উঠে আসবে। আবার দেখাতে চাইলে true লিখুন। এটা শুধু lesson পাতায় কাজ করে, হোম পাতায় banner কখনো থাকে না। */
+  showBanner:true,
   docTitle:"Stats Classroom | সহজ বাংলায় 100টি statistics term",
   brand:"Stats Classroom",
   topTag:"সহজ ভাষায় পরিসংখ্যান",

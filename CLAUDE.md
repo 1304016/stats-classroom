@@ -94,7 +94,7 @@ Data types (ডেটা টাইপ), 10 terms, in two steps of 5 each. Then t
 
 ### What is running and where
 - Site. Plain static files. Work happens on branch claude/elegant-bohr-443vy9 and is pushed to main as well. GitHub Pages is on and the site is live at https://1304016.github.io/stats-classroom/ (reported by the author, not loaded from here).
-- Bottom banner. There is now a switch, showBanner in data/ui.js, and its value is false. So the banner is hidden on every lesson page for now, and the footer row moves up into its place. The author will set it to true himself in about two days. When true, the banner comes back on lesson pages with its scroll-reveal effect, link and alt text. It is never shown on the home page. The banner markup and image are still in the code.
+- Bottom banner. The switch showBanner in data/ui.js is now true, so the banner shows on every lesson page with its scroll-reveal effect, link and alt text. It is never shown on the home page. To hide it, set showBanner to false; the footer row then moves up into its place. The banner markup and image stay in the code either way.
 - Facebook footer icon. Shows on every page including home.
 - Analytics. Not installed yet. The choice is now Google Analytics (GA4), and the Measurement ID has not arrived. index.html has an HTML comment where the GA4 snippet will go once the ID is available. (Decision 8 above still names GoatCounter and Cloudflare, which is now out of date.)
 - Theme. Light and dark toggle in the top bar, saved in localStorage.
