@@ -76,4 +76,27 @@ Do not create or push anything to GitHub other than what Phase 1 below says.
 9. Stop and wait for my review.
 
 ## Status
-Phase 1 is built and waiting for the author's review. 8 lessons are live (mean, standard-deviation, histogram, normal-distribution, p-value, confidence-interval, correlation, regression). The next category is Describing data, then the rest in sidebar order.
+Phase 1 is done and 31 of the 100 lessons are written. Work is one category at a time, then stop and wait for review.
+
+### Lessons finished
+- Basic building blocks (বেসিক কনসেপ্ট), 10 of 10. population, sample, parameter, statistic, variable, data, observation, unit-of-analysis, sampling, census.
+- Describing data (ডেসক্রিপটিভ স্ট্যাটিস্টিকস), 15 of 15. mean, median, mode, range, variance, standard-deviation, percentile, quartile, interquartile-range, outlier, skewness, kurtosis, frequency, relative-frequency, coefficient-of-variation.
+- Lessons brought over from the prototype, now in Bengali, 6 more. histogram (Showing data), normal-distribution (Probability), p-value and confidence-interval (Drawing conclusions), correlation and regression (Relationships). These sit in their own categories, so those categories are otherwise still open.
+- Every other term shows its one line meaning and the note "এই পাঠ শিগগিরই আসছে"।
+
+### Next work
+Data types (ডেটা টাইপ), 10 terms, in two steps of 5 each. Then the rest in sidebar order. After each step stop, list what was added, and wait for review. Before and after writing a lesson, check the text against the word list at the end of BANGLA_STYLE.md.
+
+### Open for the author's review
+- The Census lesson example and demo (lost exam papers story, time only, 20000 students case). Rewritten on request, not yet reviewed.
+- The "ছবি" words kept on purpose because they mean a real chart or curve. terms.js box plot meaning, describing-data.js (skewness example, kurtosis zoom hint and its alt text), showing-data.js (histogram lesson, 5 places). The author will decide later.
+- Numbers and texts the author has not confirmed yet are flagged in each step's hand-over note. Examples are the made-up 40 scores (mean 62.5), the 8-student sample (mean 58.75), the kurtosis slider range, and the Bengali term names in data/terms.js.
+
+### What is running and where
+- Site. Plain static files. Work happens on branch claude/elegant-bohr-443vy9 and is pushed to main as well. GitHub Pages is not confirmed live. It has to be switched on by the author (Settings, Pages, deploy from main, root), and no live URL has been loaded from here.
+- Bottom banner. It shows on lesson pages only, with a scroll-reveal effect, and is hidden on the home page by code in js/app.js. There is no showBanner switch or setting anywhere in the code. If the author wants one, it still has to be built.
+- Facebook footer icon. Shows on every page including home.
+- Analytics. Not installed. index.html only has an HTML comment where a GoatCounter or Cloudflare Web Analytics snippet would go. Google Analytics was never added.
+- Theme. Light and dark toggle in the top bar, saved in localStorage.
+- Demo templates in js/demos. dots, spread (describing.js), shape (skew and kurtosis), tally (frequency), grid (students), columns (table), units (unit of analysis), plus the prototype ones for histogram, bell curve, p-value, confidence interval, correlation and regression.
+- Words. All visible text lives in data/. The banned and replacement word list is at the end of BANGLA_STYLE.md.
