@@ -105,7 +105,7 @@ Object.assign(window.LESSONS,{
   example:[
     "ক্লাসের ছয়জন ছাত্রের বয়স, উচ্চতা, জেলা আর ক্লাস একটা শিটে লেখা আছে। প্রতিটা ছাত্রের জন্য একটা সারি, তাই ছয়টা সারি মানে ছয়টা observation। প্রতিটা সারিতে চারটা variable-এর মান আছে।",
     "এবার একটা সারির নামে ক্লিক করুন। তারপর আরও দুজন ছাত্র যোগ করে দেখুন, observation-এর সংখ্যা কত হয়।"],
-  remember:"Observation আর variable কি একই জিনিস? না। Observation হলো সারি, আর variable হলো কলাম। আর একজন ছাত্রের দুইবার মাপ নিলে সেটা দুটো সারি হয়, তখন দুটো observation গোনা হয়।",
+  remember:"Observation আর variable কি একই জিনিস? না। Observation হলো সারি, আর variable হলো কলাম। আর একজন ছাত্রের দুইবার মাপ নিলে সেটা দুটো সারি হয়, তখন দুটো observation গণনা করা হয়।",
   demo:{id:"columns",pick:"row",stats:["rows","perRow"],columns:[
     {name:"বয়স",values:[19,20,19,21,20,22],extra:[20,21]},
     {name:"উচ্চতা (cm)",values:[158,165,171,162,168,175],extra:[160,173]},
