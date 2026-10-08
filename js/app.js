@@ -88,6 +88,16 @@ function armBanner(on){
   bannerIO.observe(bannerEl);
 }
 var main=document.getElementById("main"),lesson=document.getElementById("lesson"),cleanup=[];
+/* A demo may list several lines for its reset button or hint. The lesson takes one by its term index, so the choice never changes between visits. */
+function seeded(cfg,seed){
+  var c=Object.assign({},cfg);
+  if(cfg.ui){
+    c.ui=Object.assign({},cfg.ui);
+    ["reset","hint"].forEach(function(k){var v=c.ui[k];if(Array.isArray(v)&&typeof v[0]==="string")c.ui[k]=v[seed%v.length];});
+  }
+  c.seed=seed;
+  return c;
+}
 function pagerLink(t,label){
   if(!t)return "<span></span>";
   return '<a class="btn" href="#'+t.slug+'"><small>'+esc(label)+'</small><span>'+esc(t.bn)+'</span></a>';
@@ -110,7 +120,7 @@ function show(slug,scroll){
   lesson.innerHTML=html;
   if(L){
     var box=document.getElementById("demo"),fn=DEMOS[L.demo.id];
-    if(fn)fn(box,cleanup,L.demo);else box.textContent=UI.demoMissing;
+    if(fn)fn(box,cleanup,seeded(L.demo,t.i));else box.textContent=UI.demoMissing;
   }
   document.title=title(t)+" | "+UI.brand;
   markCurrent(slug);

@@ -8,6 +8,8 @@ window.DEMOS.sorting=function(el,cleanup,cfg){
   var S=cfg.ui,items=cfg.items,B=cfg.boxes,N=items.length,at,first,pend=null,drag=null,msgText=S.start;
   function reset(){at=items.map(function(){return 0;});first=items.map(function(){return null;});pend=null;}
   reset();
+  /* S.right and S.wrong may be lists. An item always gets the same opening line. */
+  function line(v,i){return Array.isArray(v)?v[i%v.length]:v;}
   function zoneName(z){return z===0?S.poolName:B[z-1].name;}
   function boxName(id){return B.filter(function(b){return b.id===id;})[0].name;}
   function isRight(i){return at[i]>0&&B[at[i]-1].id===items[i].box;}
@@ -51,8 +53,8 @@ window.DEMOS.sorting=function(el,cleanup,cfg){
       else{settle();first[i]=isRight(i);}
     }
     if(z===0)msgText=tpl(S.back,{t:it.t});
-    else if(isRight(i))msgText=tpl(S.right,{t:it.t,why:it.why,box:B[z-1].name});
-    else msgText=tpl(S.wrong,{t:it.t,why:it.why,box:B[z-1].name,good:boxName(it.box)});
+    else if(isRight(i))msgText=tpl(line(S.right,i),{t:it.t,why:it.why,box:B[z-1].name});
+    else msgText=tpl(line(S.wrong,i),{t:it.t,why:it.why,box:B[z-1].name,good:boxName(it.box)});
     ok=items.filter(function(x,k){return isRight(k);}).length;
     if(ok===N)settle();
     if(ok===N)msgText+=" "+tpl(S.done,{N:N,n:first.filter(Boolean).length});
