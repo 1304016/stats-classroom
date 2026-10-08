@@ -76,7 +76,7 @@ Do not create or push anything to GitHub other than what Phase 1 below says.
 9. Stop and wait for my review.
 
 ## Status
-Phase 1 is done and 31 of the 100 lessons are written. Work is one category at a time, then stop and wait for review.
+Phase 1 is done and 36 of the 100 lessons are written. Work is one category at a time, then stop and wait for review.
 
 ### Lessons finished
 - Basic building blocks (বেসিক কনসেপ্ট), 10 of 10. population, sample, parameter, statistic, variable, data, observation, unit-of-analysis, sampling, census.
@@ -85,10 +85,10 @@ Phase 1 is done and 31 of the 100 lessons are written. Work is one category at a
 - Every other term shows its one line meaning and the note "এই পাঠ শিগগিরই আসছে"।
 
 ### Next work
-Data types (ডেটা টাইপ), 10 terms, in two steps of 5 each. Then the rest in sidebar order. After each step stop, list what was added, and wait for review. Before and after writing a lesson, check the text against the word list at the end of BANGLA_STYLE.md.
+Data types (ডেটা টাইপ), step 1 of 2 is done (qualitative-data, quantitative-data, categorical-variable, nominal-scale, ordinal-scale, demo template js/demos/sorting.js). Step 2 is next, the other 5 terms (interval-scale, ratio-scale, discrete-variable, continuous-variable, dummy-variable). Then the rest in sidebar order. After each step stop, list what was added, and wait for review. Before and after writing a lesson, check the text against the word list at the end of BANGLA_STYLE.md.
 
 ### Open for the author's review
-- The Census lesson example and demo (lost exam papers story, time only, 20000 students case). Rewritten on request, not yet reviewed.
+- The Census lesson example and demo (lost exam papers story, time only, 20000 students case). Rewritten again on request (1 minute per person, 40 minutes, 20000 students about 14 days), not yet reviewed.
 - The "ছবি" words kept on purpose because they mean a real chart or curve. terms.js box plot meaning, describing-data.js (skewness example, kurtosis zoom hint and its alt text), showing-data.js (histogram lesson, 5 places). The author will decide later.
 - Numbers and texts the author has not confirmed yet are flagged in each step's hand-over note. Examples are the made-up 40 scores (mean 62.5), the 8-student sample (mean 58.75), the kurtosis slider range, and the Bengali term names in data/terms.js.
 

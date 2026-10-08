@@ -266,3 +266,22 @@ input[type=range]{width:100%;min-height:30px;accent-color:var(--accent);margin:0
 .tally td.colsel{background:var(--accent-soft)}
 .tablewrap.tall{max-height:300px;overflow-y:auto}
 .tablewrap.tall thead th{position:sticky;top:0;background:var(--surface)}
+/* Sorting demo (types of data). Only the chips take touch-action none, so the page still scrolls everywhere else. */
+.sortarea{display:flex;flex-direction:column;gap:14px;min-width:0}
+.boxes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px}
+.zone{border:1px dashed var(--line);border-radius:8px;padding:12px;background:var(--surface);display:flex;flex-direction:column;gap:6px;min-width:0}
+.zone.box{border-style:solid}
+.zone.over{border-color:var(--accent);background:var(--accent-soft)}
+.bname{font-weight:700}
+.bnote{font-size:.9rem;color:var(--ink-2)}
+.slot{display:flex;flex-wrap:wrap;gap:8px;min-height:48px;align-items:flex-start;align-content:flex-start;padding-top:4px}
+.ph{color:var(--ink-2);font-size:.9rem;align-self:center}
+.chip{touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;font:inherit;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:6px 12px;min-height:44px;display:flex;flex-direction:column;align-items:flex-start;gap:0;line-height:1.5;text-align:left;max-width:100%}
+.chip:hover{border-color:var(--accent)}
+.chip .ct{font-weight:700}
+.chip .cs{font-size:.82rem;color:var(--ink-2)}
+.chip.ok{background:var(--accent-soft);border-color:var(--accent)}
+.chip.bad{border-color:var(--c2);border-width:2px;padding:5px 11px}
+.chip.ok .ct::before{content:"✓ "}
+.chip.bad .ct::before{content:"✕ ";color:var(--c2)}
+.chip.drag{position:relative;z-index:20;cursor:grabbing;box-shadow:0 6px 18px rgba(0,0,0,.25);opacity:.95}
