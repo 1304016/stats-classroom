@@ -23,6 +23,10 @@ Flowing prose. No bold, no bullet points, no blockquotes inside lesson text.
 No em dashes. Avoid colons unless needed. Use the Bengali full stop "।".
 Numbers are written in English digits (55, 62.6, 100) so they match the charts.
 
+## Demo messages
+Demo-র live message ছোট দুই বাক্সের হবে। আগে কী হলো, তারপর কেন। প্রশংসা বা "ঠিক আছে" দিয়ে শুরু নয়।
+যেমন "ঠিক জায়গায় গেছে। পরীক্ষার নম্বর একটা পরিমাণ, তাই গড় বের করা যায়।" আর "এটা এখানে হবে না। রক্তের গ্রুপ একটা ক্যাটাগরি, তার গড় বের করা যায় না।"
+
 ## Approved samples
 These were read and approved by the author. Match their tone.
 
@@ -83,6 +87,8 @@ P-value বলে, বিশেষ কিছু ঘটছে না ধরে �
 | চোখা | সরু আর উঁচু (peaked) |
 | স্তর (slider-এর লেবেলে) | লেভেল |
 | ঘাবড়াবেন না | চিন্তা করবেন না |
+| দল (category অর্থে) | ক্যাটাগরি |
+| মেপে বা গুনে পাওয়া | পরিমাণ বোঝায় এমন |
 
 "ছবি" শব্দটা শুধু তখনই থাকতে পারে, যখন সত্যিই demo-র চার্ট বা curve বোঝায়, যেমন "zoom করা ছবি"।
 
