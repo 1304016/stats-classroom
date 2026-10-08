@@ -3,6 +3,7 @@ window.DEMOS=window.DEMOS||{};
 window.SC=(function(){
   function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
   function fmt1(v){return String(Math.round(v*10)/10);}
+  function n2(v){return String(Math.round(v*100)/100);}
   function anchor(x,W){return x<64?"start":(x>W-64?"end":"middle");}
   function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
   function tpl(s,o){return String(s).replace(/\{(\w+)\}/g,function(m,k){return o&&o[k]!==undefined?o[k]:m;});}
@@ -28,5 +29,5 @@ window.SC=(function(){
     }).join("")+'</div>';
   }
   function width(box){return Math.max(280,Math.floor(box.clientWidth));}
-  return{clamp:clamp,fmt1:fmt1,anchor:anchor,esc:esc,tpl:tpl,invNorm:invNorm,mulberry32:mulberry32,watch:watch,presets:presets,width:width};
+  return{clamp:clamp,fmt1:fmt1,n2:n2,anchor:anchor,esc:esc,tpl:tpl,invNorm:invNorm,mulberry32:mulberry32,watch:watch,presets:presets,width:width};
 })();

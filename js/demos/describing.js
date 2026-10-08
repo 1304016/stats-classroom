@@ -1,13 +1,13 @@
 /* Describing data. Draggable dots on a number line, and a spread slider. */
 (function(){
-var SC=window.SC,clamp=SC.clamp,fmt1=SC.fmt1,esc=SC.esc,tpl=SC.tpl;
+var SC=window.SC,clamp=SC.clamp,fmt1=SC.fmt1,n2=SC.n2,esc=SC.esc,tpl=SC.tpl;
 
-/* Dots on a number line. One template for mean, median, mode, range and percentile.
+/* Dots on a number line. One template for mean, median, mode, range, percentile, quartile, IQR and outlier.
    cfg.markers picks what is drawn, cfg.stats picks the number boxes, cfg.rule picks the live message. */
 window.DEMOS.dots=function(el,cleanup,cfg){
   var S=cfg.ui,START=cfg.start,MAXN=cfg.max||9,AX=cfg.axis||{min:0,max:100,step:20};
   var MK=cfg.markers||["median","mean"],RULE=cfg.rule||"meanMedian",STATS=cfg.stats||["mean","median","count"];
-  var CLS={mean:"b",median:"a",mode:"a",range:"b",pval:"a"};
+  var CLS={mean:"b",median:"a",mode:"a",range:"b",pval:"a",iqr:"b",outCount:"b"};
   var s=START.slice(),drag=-1,pp=cfg.p||90,L=20,RM=20,H=272,hasAdd=cfg.addValue!==undefined;
   function has(k){return MK.indexOf(k)>-1;}
   el.innerHTML=
@@ -29,7 +29,11 @@ window.DEMOS.dots=function(el,cleanup,cfg){
     var modes=mc>1?Object.keys(c).filter(function(v){return c[v]===mc;}).map(Number).sort(function(a,b){return a-b;}):[];
     var rank=Math.max(1,Math.ceil(pp/100*n)),pv=sorted[rank-1];
     var under=sorted.filter(function(v){return v<=pv;}).length;
-    return{mean:mean,med:med,n:n,mc:mc,modes:modes,min:sorted[0],max:sorted[n-1],pv:pv,under:under};
+    /* Quartiles are the medians of the lower and upper halves. With an odd count the middle value is left out. */
+    function medOf(a){var m=a.length;return m%2?a[(m-1)/2]:(a[m/2-1]+a[m/2])/2;}
+    var half=Math.floor(n/2),q1=medOf(sorted.slice(0,half)),q3=medOf(sorted.slice(n-half)),iqr=q3-q1,lf=q1-1.5*iqr,uf=q3+1.5*iqr;
+    var out=sorted.filter(function(v){return v<lf||v>uf;});
+    return{mean:mean,med:med,n:n,mc:mc,modes:modes,min:sorted[0],max:sorted[n-1],pv:pv,under:under,q1:q1,q3:q3,iqr:iqr,lf:lf,uf:uf,out:out};
   }
   function render(){
     var W=SC.width(box),span=AX.max-AX.min;
@@ -40,6 +44,7 @@ window.DEMOS.dots=function(el,cleanup,cfg){
     order.forEach(function(i){var px=x(s[i]),r=0;while(rows[r]!==undefined&&px-rows[r]<17)r++;rows[r]=px;pos[i]={px:px,r:r};});
     var g='<svg class="chart" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" role="group" aria-label="'+esc(S.aria)+'">';
     if(has("percentile"))g+='<rect class="band" x="'+x(AX.min)+'" y="30" width="'+(x(c.pv)-x(AX.min))+'" height="170"/>';
+    if(has("iqr"))g+='<rect class="band" x="'+x(c.q1)+'" y="30" width="'+(x(c.q3)-x(c.q1))+'" height="170"/>';
     if(has("mode"))c.modes.forEach(function(v){g+='<rect class="band" x="'+(x(v)-10)+'" y="30" width="20" height="170"/>';});
     g+='<line class="axis" x1="'+L+'" x2="'+(W-RM)+'" y1="200" y2="200"/>';
     for(var v=AX.min;v<=AX.max;v+=AX.step){g+='<line class="axis" x1="'+x(v)+'" x2="'+x(v)+'" y1="200" y2="206"/><text class="t" x="'+x(v)+'" y="222" text-anchor="middle">'+v+'</text>';}
@@ -52,6 +57,28 @@ window.DEMOS.dots=function(el,cleanup,cfg){
       g+='<path class="meanmark" d="M'+ax+' 228 L'+(ax-7)+' 241 L'+(ax+7)+' 241 Z"/>';
       g+='<text class="t strong b" x="'+ax+'" y="262" text-anchor="'+SC.anchor(ax,W)+'">'+esc(S.mean)+' '+fmt1(c.mean)+'</text>';
     }
+    if(has("q13"))[["q1",c.q1],["q3",c.q3]].forEach(function(q){
+      var qx=x(q[1]);
+      g+='<line class="medline" x1="'+qx+'" x2="'+qx+'" y1="38" y2="200"/>';
+      g+='<path class="medmark" d="M'+(qx-7)+' 24 L'+(qx+7)+' 24 L'+qx+' 38 Z"/>';
+      g+='<text class="t strong a" x="'+qx+'" y="16" text-anchor="'+SC.anchor(qx,W)+'">'+esc(S[q[0]])+' '+n2(q[1])+'</text>';
+    });
+    if(has("q2")){
+      g+='<line class="medline" x1="'+mx+'" x2="'+mx+'" y1="38" y2="200"/>';
+      g+='<path class="medmark" d="M'+mx+' 228 L'+(mx-7)+' 241 L'+(mx+7)+' 241 Z"/>';
+      g+='<text class="t strong a" x="'+mx+'" y="262" text-anchor="'+SC.anchor(mx,W)+'">'+esc(S.median)+' '+n2(c.med)+'</text>';
+    }
+    if(has("iqr")){
+      var i1=x(c.q1),i2=x(c.q3);
+      g+='<path class="brk" d="M'+i1+' 228 L'+i1+' 236 L'+i2+' 236 L'+i2+' 228"/>';
+      g+='<text class="t strong a" x="'+((i1+i2)/2)+'" y="258" text-anchor="middle">'+esc(tpl(S.iqrMark,{v:n2(c.iqr)}))+'</text>';
+    }
+    if(has("fence"))[["lowF",c.lf],["upF",c.uf]].forEach(function(f){
+      if(f[1]<AX.min||f[1]>AX.max)return;
+      var fx=x(f[1]);
+      g+='<line class="truth" x1="'+fx+'" x2="'+fx+'" y1="38" y2="200"/>';
+      g+='<text class="t strong" x="'+fx+'" y="262" text-anchor="'+(f[0]==="lowF"?(fx<110?"start":"end"):(fx>W-110?"end":"start"))+'">'+esc(tpl(S[f[0]],{v:n2(f[1])}))+'</text>';
+    });
     if(has("mode"))c.modes.forEach(function(v){g+='<text class="t strong a" x="'+x(v)+'" y="16" text-anchor="'+SC.anchor(x(v),W)+'">'+esc(S.mode)+' '+v+'</text>';});
     if(has("range")){
       var x1=x(c.min),x2=x(c.max);
@@ -65,12 +92,12 @@ window.DEMOS.dots=function(el,cleanup,cfg){
       g+='<text class="t strong a" x="'+px+'" y="16" text-anchor="'+SC.anchor(px,W)+'">'+esc(tpl(S.pMark,{p:pp,v:c.pv}))+'</text>';
     }
     s.forEach(function(v,i){
-      var p=pos[i],hit=(has("mode")&&c.modes.indexOf(v)>-1)||(has("range")&&(v===c.min||v===c.max));
+      var p=pos[i],hit=(has("mode")&&c.modes.indexOf(v)>-1)||(has("range")&&(v===c.min||v===c.max))||(has("fence")&&(v<c.lf||v>c.uf));
       g+='<circle class="dot-s'+(i>=START.length?' extra':'')+(hit?' hit':'')+'" data-i="'+i+'" cx="'+p.px+'" cy="'+(180-p.r*17)+'" r="8" tabindex="0" role="slider" aria-label="'+esc(tpl(S.sAria,{i:i+1}))+'" aria-valuemin="'+AX.min+'" aria-valuemax="'+AX.max+'" aria-valuenow="'+v+'"><title>'+esc(tpl(S.sTitle,{i:i+1,v:v}))+'</title></circle>';
     });
     g+='</svg>';
     box.innerHTML=g;
-    var vals={mean:fmt1(c.mean),median:fmt1(c.med),count:c.n,mode:c.modes.length?c.modes.join(", "):S.none,modeCount:c.mc,min:c.min,max:c.max,range:c.max-c.min,pval:c.pv,pcount:tpl(S.pcountValue||"",{k:c.under,n:c.n})};
+    var vals={mean:fmt1(c.mean),median:fmt1(c.med),count:c.n,mode:c.modes.length?c.modes.join(", "):S.none,modeCount:c.mc,min:c.min,max:c.max,range:c.max-c.min,pval:c.pv,pcount:tpl(S.pcountValue||"",{k:c.under,n:c.n}),q1:n2(c.q1),q3:n2(c.q3),iqr:n2(c.iqr),lfence:n2(c.lf),ufence:n2(c.uf),outCount:c.out.length};
     STATS.forEach(function(k){q(k).textContent=vals[k];});
     if(cfg.pSlider)q("pv").textContent=tpl(S.pValue,{p:pp});
     var m,d=c.mean-c.med,r=c.max-c.min;
@@ -78,6 +105,12 @@ window.DEMOS.dots=function(el,cleanup,cfg){
       m=!c.modes.length?S.noMode:(c.modes.length===1?tpl(S.oneMode,{v:c.modes[0],c:c.mc}):tpl(S.manyMode,{vs:c.modes.join(" আর "),c:c.mc}));
     }else if(RULE==="range"){
       m=tpl(r<=cfg.tightAt?S.tight:(r>=cfg.wideAt?S.wide:S.mid),{r:r,min:c.min,max:c.max});
+    }else if(RULE==="quartile"){
+      m=tpl(S.qMsg,{n:c.n,q1:n2(c.q1),q2:n2(c.med),q3:n2(c.q3)});
+    }else if(RULE==="iqr"){
+      m=tpl(S.iqrMsg,{q1:n2(c.q1),q3:n2(c.q3),iqr:n2(c.iqr),r:r});
+    }else if(RULE==="outlier"){
+      m=tpl(c.out.length?S.hasOut:S.noOut,{vs:c.out.join(", "),lf:n2(c.lf),uf:n2(c.uf)});
     }else if(RULE==="percentile"){
       m=tpl(S.pMsg,{p:pp,v:c.pv,k:c.under,n:c.n,pc:Math.round(100*c.under/c.n)});
     }else{
