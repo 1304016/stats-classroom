@@ -168,13 +168,16 @@ window.DEMOS.spread=function(el,cleanup,cfg){
   var sdz=Math.sqrt(z.reduce(function(a,v){return a+v*v;},0)/(n-1));
   z=z.map(function(v){return v/sdz;});
   var sd=cfg.start,L=20,RM=20,H=252;
+  M=cfg.mean;
   el.innerHTML=
     '<div class="ctl"><label for="sdr">'+esc(S.label)+' <span class="val" data-k="val"></span></label>'+
     '<input id="sdr" type="range" min="'+cfg.min+'" max="'+cfg.max+'" step="1" value="'+sd+'"></div>'+
+    (cfg.meanSlider?'<div class="ctl"><label for="mnr">'+esc(S.meanSliderLabel)+' <span class="val" data-k="mval"></span></label><input id="mnr" type="range" min="'+cfg.meanMin+'" max="'+cfg.meanMax+'" step="1" value="'+M+'"></div>':'')+
     SC.presets(S.presets,"sd")+
     '<div class="chart-box"></div>'+
     '<div class="swatches"><span><i class="sw d"></i>'+esc(S.swIn)+'</span><span><i class="sw b"></i>'+esc(S.swOut)+'</span></div>'+
     '<div class="stats" aria-live="polite">'+
+      (cfg.showCv?'<div class="stat"><div class="n b" data-k="cv"></div><div class="k">'+esc(S.cvLabel)+'</div></div>':'')+
       (cfg.showVar?'<div class="stat"><div class="n b" data-k="var"></div><div class="k">'+esc(S.varLabel)+'</div></div>':'')+
       '<div class="stat"><div class="n a" data-k="sd"></div><div class="k">'+esc(S.sdLabel)+'</div></div>'+
       '<div class="stat"><div class="n" data-k="in"></div><div class="k">'+esc(S.inLabel)+'</div></div>'+
@@ -208,16 +211,22 @@ window.DEMOS.spread=function(el,cleanup,cfg){
     q("sd").textContent=sd;
     var vr=Math.round(vals.reduce(function(a,v){return a+(v-M)*(v-M);},0)/(n-1));
     if(cfg.showVar)q("var").textContent=vr;
+    var cv=Math.round(1000*sd/M)/10;
+    if(cfg.showCv)q("cv").textContent=cv+"%";
+    if(cfg.meanSlider)q("mval").textContent=tpl(S.meanSliderValue,{m:M});
     q("in").textContent=tpl(S.inValue,{k:inBand,n:n});
-    var m=sd<=5?S.tight:(sd<=12?S.normal:S.wide);
-    q("msg").textContent=m+" "+(cfg.showVar?tpl(S.varNote,{sd:sd,v:vr}):tpl(S.share,{p:Math.round(100*inBand/n)}));
+    var m=cfg.showCv?(cv<=cfg.cvLow?S.tight:(cv>=cfg.cvHigh?S.wide:S.normal)):(sd<=5?S.tight:(sd<=12?S.normal:S.wide));
+    q("msg").textContent=m+" "+(cfg.showCv?tpl(S.cvNote,{sd:sd,m:M,cv:cv}):cfg.showVar?tpl(S.varNote,{sd:sd,v:vr}):tpl(S.share,{p:Math.round(100*inBand/n)}));
   }
   range.addEventListener("input",function(){sd=+range.value;render();});
   el.addEventListener("click",function(e){
     var b=e.target.closest&&e.target.closest("button[data-sd]");
     if(!b)return;
-    sd=+b.getAttribute("data-sd");range.value=sd;render();
+    var v=b.getAttribute("data-sd");
+    if(cfg.meanSlider){var ms=v.split(",");M=+ms[0];sd=+ms[1];el.querySelector("#mnr").value=M;}else sd=+v;
+    range.value=sd;render();
   });
+  if(cfg.meanSlider){var mr=el.querySelector("#mnr");mr.addEventListener("input",function(){M=+mr.value;render();});}
   render();
   SC.watch(box,cleanup,render);
 };

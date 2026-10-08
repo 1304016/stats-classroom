@@ -236,3 +236,16 @@ input[type=range]{width:100%;min-height:30px;accent-color:var(--accent);margin:0
 .banner.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}
 .banner.reveal.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.banner.reveal{opacity:1;transform:none;transition:none}}
+/* Tally table and bars */
+.tally{width:100%;border-collapse:collapse}
+.tally th,.tally td{padding:6px;text-align:left;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;line-height:1.5}
+.tally th{font-size:.9rem;color:var(--ink-2);font-weight:700}
+.tally td.num{font-family:var(--font-display);font-weight:800;font-size:1.2rem}
+.tally tfoot td{font-weight:700;border-bottom:0}
+.tally .acts{display:flex;gap:6px;justify-content:flex-end}
+.tbtn{width:40px;height:40px;padding:0;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:6px;background:var(--surface-2);color:var(--ink);font-size:1.3rem;line-height:1;cursor:pointer}
+.tbtn:hover{border-color:var(--accent)}
+.tbtn[disabled]{opacity:.4;cursor:default}
+.chart .tbar{fill:var(--accent);fill-opacity:.75}
+.chart .tbar.hot{fill:var(--c2);fill-opacity:1}
+@media (max-width:480px){.tbtn{width:34px;height:34px}.tally .acts{gap:4px}.tally th,.tally td{padding:6px 3px}.tally td.num{font-size:1.05rem}}
