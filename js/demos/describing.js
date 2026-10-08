@@ -180,7 +180,7 @@ window.DEMOS.spread=function(el,cleanup,cfg){
       (cfg.showCv?'<div class="stat"><div class="n b" data-k="cv"></div><div class="k">'+esc(S.cvLabel)+'</div></div>':'')+
       (cfg.showVar?'<div class="stat"><div class="n b" data-k="var"></div><div class="k">'+esc(S.varLabel)+'</div></div>':'')+
       '<div class="stat"><div class="n a" data-k="sd"></div><div class="k">'+esc(S.sdLabel)+'</div></div>'+
-      '<div class="stat"><div class="n" data-k="in"></div><div class="k">'+esc(S.inLabel)+'</div></div>'+
+      (cfg.showCv?'':'<div class="stat"><div class="n" data-k="in"></div><div class="k">'+esc(S.inLabel)+'</div></div>')+
     '</div>'+
     '<p class="msg" data-k="msg" aria-live="polite"></p>';
   var box=el.querySelector(".chart-box"),range=el.querySelector("#sdr");
@@ -214,7 +214,7 @@ window.DEMOS.spread=function(el,cleanup,cfg){
     var cv=Math.round(1000*sd/M)/10;
     if(cfg.showCv)q("cv").textContent=cv+"%";
     if(cfg.meanSlider)q("mval").textContent=tpl(S.meanSliderValue,{m:M});
-    q("in").textContent=tpl(S.inValue,{k:inBand,n:n});
+    if(!cfg.showCv)q("in").textContent=tpl(S.inValue,{k:inBand,n:n});
     var m=cfg.showCv?(cv<=cfg.cvLow?S.tight:(cv>=cfg.cvHigh?S.wide:S.normal)):(sd<=5?S.tight:(sd<=12?S.normal:S.wide));
     q("msg").textContent=m+" "+(cfg.showCv?tpl(S.cvNote,{sd:sd,m:M,cv:cv}):cfg.showVar?tpl(S.varNote,{sd:sd,v:vr}):tpl(S.share,{p:Math.round(100*inBand/n)}));
   }

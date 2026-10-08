@@ -230,7 +230,7 @@ Object.assign(window.LESSONS,{
     meanSliderLabel:"গড় নম্বর",meanSliderValue:"{m}",
     presets:[["70,7","গড় বেশি, ছড়ানো 7"],["35,7","গড় কম, ছড়ানো 7"],["50,14","গড় 50, ছড়ানো 14"]],
     swIn:"এক standard deviation-এর মধ্যে",swOut:"আরও দূরে",
-    cvLabel:"CV",sdLabel:"Standard deviation (নম্বর)",inLabel:"এক SD-র মধ্যে থাকা ছাত্রছাত্রী",inValue:"{k} / {n}",
+    cvLabel:"CV",sdLabel:"Standard deviation (নম্বর)",
     meanLabel:"Mean {m}",brace:"দুই পাশে এক standard deviation",
     aria:"24 জন ছাত্রছাত্রীর নম্বরের dot plot",
     tight:"গড়ের তুলনায় ছড়ানো খুব কম। সবাই গড়ের কাছাকাছি আছে।",

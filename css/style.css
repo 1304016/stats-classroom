@@ -249,3 +249,18 @@ input[type=range]{width:100%;min-height:30px;accent-color:var(--accent);margin:0
 .chart .tbar{fill:var(--accent);fill-opacity:.75}
 .chart .tbar.hot{fill:var(--c2);fill-opacity:1}
 @media (max-width:480px){.tbtn{width:34px;height:34px}.tally .acts{gap:4px}.tally th,.tally td{padding:6px 3px}.tally td.num{font-size:1.05rem}}
+/* Student grid and column table */
+.stugrid{display:grid;gap:6px}
+.stu{aspect-ratio:1;min-width:0;padding:0;display:flex;align-items:center;justify-content:center;font:inherit;font-size:.8rem;font-variant-numeric:tabular-nums;color:var(--ink-2);background:var(--surface-2);border:1px solid var(--line);border-radius:8px;cursor:pointer;transition:background .12s ease,border-color .12s ease}
+.stu:hover{border-color:var(--accent)}
+.stu.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.stu:not(:has(span))::before{content:"";width:46%;height:46%;border-radius:50%;background:currentColor;opacity:.55}
+.stu.on:not(:has(span))::before{opacity:1}
+.sw.stu-pop{background:var(--surface-2);border:1px solid var(--ink-2)}
+.sw.stu-sample{background:var(--accent)}
+.tablewrap{overflow-x:auto}
+.tally.cols td,.tally.cols th{white-space:nowrap}
+.colbtn{font:inherit;font-weight:700;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:4px 10px;cursor:pointer}
+.colbtn:hover{border-color:var(--accent)}
+.colbtn.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.tally td.colsel{background:var(--accent-soft)}
