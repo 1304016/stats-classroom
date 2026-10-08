@@ -16,6 +16,7 @@ Never use formal or literary words such as "বাঞ্ছনীয়". Never 
 1. Definition. Two sentences at most.
 2. Classroom example. Starts with "ধরুন আপনি..." and uses a class, students, a teacher or a university. Keep the numbers small and real. Two short paragraphs at most.
 3. Nuance. Starts with "তবে মনে রাখতে হবে". One short paragraph. This is the "মনে রাখুন" box.
+Definition rule. সংজ্ঞা লেখার সময় বইয়ের শব্দ (যেমন স্বাভাবিক ক্রম, সংগৃহীত, নির্দেশ করে) এড়াবে। সংজ্ঞা পড়ে একজন নতুন ছাত্র ছাড়া সাহায্যে বুঝবে কিনা, সেটা নিজেকে প্রশ্ন করবে।
 Section labels are "ক্লাসরুমের উদাহরণ", "নিজে করে দেখুন", "মনে রাখুন".
 
 ## Formatting
