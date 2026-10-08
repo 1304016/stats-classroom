@@ -115,9 +115,9 @@ function show(slug,scroll){
   var t=BY[slug],L=LESSONS[slug];
   var html='<header class="head"><div class="crumb">'+esc(t.cat)+'</div><h1 class="term">'+esc(title(t))+'</h1>'+defHtml(L?L.def:t.meaning)+'</header>';
   if(L){
-    html+='<section class="sec"><h2 class="label">'+esc(UI.labels.classroom)+'</h2>'+L.example.map(para).join("")+'</section>'+
+    html+='<section class="sec example">'+L.example.map(para).join("")+'</section>'+
       '<section class="panel demo"><h2 class="label">'+esc(UI.labels.demo)+'</h2><div id="demo"></div></section>'+
-      '<section class="remember"><h2 class="label">'+esc(UI.labels.remember)+'</h2><p>'+esc(L.remember)+'</p></section>';
+      '<section class="remember"><h2 class="label">'+esc(L.boxTitle||UI.labels.remember)+'</h2>'+(Array.isArray(L.remember)?L.remember:[L.remember]).map(para).join("")+'</section>';
   }else{
     html+='<section class="panel soon"><h2 class="label">'+esc(UI.soonTitle)+'</h2><p>'+esc(UI.soonBody)+'</p></section>';
   }

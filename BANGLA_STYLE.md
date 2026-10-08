@@ -13,9 +13,12 @@ Write "change হয়", not "নড়ে". Write "বাড়ে" and "ক�
 Never use formal or literary words such as "বাঞ্ছনীয়". Never use flowery or dramatic phrases such as "ঘাম-ঝরানো" or "ঝকঝকে".
 
 ## Lesson shape
-1. Definition. It comes before the example and must make sense alone, without the example. There is no limit on its length. It takes as many lines as it needs, four, five, six, seven or more, and it may be written as a list of short paragraphs. The order is below.
-2. Example. A scene everyone knows from daily life. See the scene rules below. The numbers stay small and real. There is no limit on its length or on the number of paragraphs. A second small scene in a different shape is welcome. Walk through the reasoning step by step where a newcomer could stumble. The opening changes from lesson to lesson, "ধরুন আপনি..." is only one of the ways in.
-3. Nuance. No fixed opening and never "তবে মনে রাখতে হবে". It takes as many lines as it needs. This is the "মনে রাখুন" box. See the variety rules below.
+A lesson has four parts, in this order.
+(ক) সংজ্ঞা। যত লাইন লাগে, ছোট ছোট বাক্যে। It may be written as a list of short paragraphs. It must make sense alone, without the example. The order of a definition is below. No limit on length.
+(খ) উদাহরণ। No heading. It starts naturally right under the definition. A scene everyone knows from daily life, see the scene rules below. The numbers stay small and real. No limit on length or on the number of paragraphs. A second small scene in a different shape is welcome. Walk through the reasoning step by step where a newcomer could stumble.
+(গ) ইন্টারেক্টিভ ড্যাশবোর্ড। The demo.
+(ঘ) সারসংক্ষেপ। The gist of the lesson, a few short lines to carry away after reading everything. It is not a place for a new warning. As many lines as it needs. In data it is the remember field with boxTitle: "সারসংক্ষেপ", and it may be a list of lines. Without boxTitle the old heading "মনে রাখুন" shows. Old lessons will move to the new heading one by one, later.
+Example openings. The start is natural and the shape changes from lesson to lesson, for example "একটা উদাহরণে আসা যাক।", "দেখা যাক।", "ধরুন ...", "মনে করুন ...", "একটা ঘটনা দিয়ে শুরু করি।". No two lessons in a row open the same way. Never open with a label such as "ক্লাসরুমের উদাহরণ:". The old rule about "তবে মনে রাখতে হবে" stays: no summary or remember text opens with it.
 Length rule. সংজ্ঞা আর উদাহরণের দৈর্ঘ্যের কোনো সীমা নেই। "এক থেকে দুই বাক্য" ধরনের সীমা আর নেই। লক্ষ্য সংক্ষিপ্ত করা না, পরিষ্কার বোঝানো। তবে প্রতিটা বাক্য ছোট থাকবে, একটা বাক্যে একটাই কথা। লাইন বাড়বে, বাক্য জড়াবে না। Demo-র live message-এ দুই বাক্যের সীমা থাকছে, কারণ সেটা পর্দায় ক্ষণিক আসে, তবে কারণটা পূর্ণ আর পরিষ্কার হবে।
 সংজ্ঞার ক্রম।
 (ক) জিনিসটা কী, সবচেয়ে সহজ কথায়, ইতিবাচক ভাবে।
@@ -26,7 +29,7 @@ Length rule. সংজ্ঞা আর উদাহরণের দৈর্ঘ�
 সংজ্ঞা একা পড়লেই বোঝা যাবে, উদাহরণ অংশ না পড়েও। "এটা নয়, ওটা নয়" দিয়ে শুরু করবে না।
 সংজ্ঞা লেখার পর পরীক্ষা। নিজেকে জিজ্ঞেস করো, যে মানুষ এই term কখনো শোনেননি তিনি কারও সাহায্য ছাড়া পড়ে বুঝবেন কি না। কোথাও থমকে যাবেন মনে হলে আরও লাইন যোগ করে খুলে বলো। একটা লাইনও বাদ দিয়ে সংক্ষিপ্ত করার চেষ্টা করবে না।
 Definition rule. সংজ্ঞা লেখার সময় বইয়ের শব্দ (যেমন স্বাভাবিক ক্রম, সংগৃহীত, নির্দেশ করে) এড়াবে। সংজ্ঞা পড়ে একজন নতুন ছাত্র ছাড়া সাহায্যে বুঝবে কিনা, সেটা নিজেকে প্রশ্ন করবে।
-Section labels are "ক্লাসরুমের উদাহরণ", "নিজে করে দেখুন", "মনে রাখুন".
+Section labels. The example has no heading, it starts right under the definition, set apart by space and a light rule. The demo heading is "ইন্টারেক্টিভ ড্যাশবোর্ড". The last box heading is "সারসংক্ষেপ" (see the structure below).
 
 ## Formatting
 Flowing prose. No bold, no bullet points, no blockquotes inside lesson text.

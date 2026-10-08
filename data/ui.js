@@ -37,7 +37,7 @@ window.UI={
   browseAll:"সব 100টি term দেখুন",
   railOpen:"Term-এর তালিকা খুলুন",
   railClose:"Term-এর তালিকা বন্ধ করুন",
-  labels:{classroom:"ক্লাসরুমের উদাহরণ",demo:"নিজে করে দেখুন",remember:"মনে রাখুন"},
+  labels:{demo:"ইন্টারেক্টিভ ড্যাশবোর্ড",remember:"মনে রাখুন"},
   prev:"← আগের",
   next:"পরের →",
   soonTitle:"এই পাঠ শিগগিরই আসছে",

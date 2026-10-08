@@ -137,6 +137,8 @@ h1.term{font-family:var(--font-bn);font-weight:700;font-size:clamp(1.9rem,5.5vw,
 .head{display:block}
 .sec{display:flex;flex-direction:column;gap:10px}
 .sec p{margin:0;max-width:65ch}
+/* The example has no heading. A light rule and some space set it apart from the definition above. */
+.sec.example{border-top:1px solid var(--line);padding-top:28px;margin-top:4px;gap:14px}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:20px;min-width:0}
 .demo{display:flex;flex-direction:column;gap:16px}
 #demo{display:flex;flex-direction:column;gap:16px;min-width:0}
