@@ -264,3 +264,5 @@ input[type=range]{width:100%;min-height:30px;accent-color:var(--accent);margin:0
 .colbtn:hover{border-color:var(--accent)}
 .colbtn.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .tally td.colsel{background:var(--accent-soft)}
+.tablewrap.tall{max-height:300px;overflow-y:auto}
+.tablewrap.tall thead th{position:sticky;top:0;background:var(--surface)}
